@@ -143,6 +143,7 @@
         $('#scheduleView').toggleClass('hidden', false);
         renderSchedules(pageUrl);
 
+        ga(['send', 'event', 'mainInteractions', 'click', 'pageUrl', pageUrl);
         e.preventDefault();
      });
 
