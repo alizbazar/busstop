@@ -116,7 +116,7 @@
             <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
         </div>
         <div class="footer">
-            <p>© alizbazar 2014 | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></p>
+            <p>© <a href="http://www.twitter.com/alizbazar" target="_blank" class="text-muted">@alizbazar</a> 2014 | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></p>
         </div>
     </div>
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -143,7 +143,7 @@
         $('#scheduleView').toggleClass('hidden', false);
         renderSchedules(pageUrl);
 
-        ga(['send', 'event', 'mainInteractions', 'click', 'pageUrl', pageUrl);
+        ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', pageUrl);
         e.preventDefault();
      });
 
