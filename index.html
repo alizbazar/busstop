@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" manifest="manifest.appcache">
+<head>
+    <meta charset="UTF-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <meta http-equiv="cleartype" content="on">
+    <title>Bussipysäkillä</title>
+    <link rel="apple-touch-icon-precomposed" sizes="icons/114x114" href="bus-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="icons/72x72" href="bus-72.png">
+    <link rel="apple-touch-icon-precomposed" href="icons/bus-57.png">
+    <link rel="shortcut icon" sizes="196x196" href="icons/hsl-bus.png">
+    <link rel="shortcut icon" href="icons/hsl-bus.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) --> 
+    <meta name="msapplication-TileImage" content="icons/hsl-bus-144.png">
+    <meta name="msapplication-TileColor" content="#007ac9">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+    .container {
+        text-align: center;
+    }
+    #schedule {
+        text-align: left;
+    }
+    h2.timeLeft {
+        font-size: 70px;
+        padding-bottom: 20px;
+        color: #3276B1;
+    }
+    h2.timeLeft.walk {
+        color: #dbc625;
+    }
+    h2.timeLeft.run {
+        color: #af3333;
+    }
+    .view h1:first-child, .view h2:first-child {
+        margin-top: 0;
+    }
+    .jumbotron {
+        margin-top: 10px;
+    }
+    #schedule tbody tr {
+        cursor: pointer;
+    }/*
+    #schedule tbody tr:hover {
+        background-color: #c7dced;
+    }
+    #schedule tbody td:hover {
+        background-color: #c7dced;
+    }*/
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color: #e0f4ff;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron hidden view" id="indexView">
+            <h1>Seuraa bussin saapumista pysäkille</h1>
+            <p class="lead">Löydä bussipysäkki <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
+            <div class="form-group">
+                <label for="pageUrl">Pysäkkisivun osoite:</label>
+                <input type="url" id="pageUrl" class="form-control" value="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" />
+            </div>
+            <p><a href="#" class="btn btn-lg btn-primary" id="follow">Seuraa</a></p>
+            <h4>Esimerkkipysäkkejä:</h4>
+            <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4043&stopname=Palkkatilanportti@L%F6nebost%E4llsporten&dir=2" class="btn btn-success quickLink" id="follow">Palkkatilanportti</a></p>
+            <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" class="btn btn-success quickLink" id="follow">Konemies</a></p>
+        </div>
+        <div class="jumbotron view" id="scheduleView">
+            <h2 id="stopName"></h2>
+            <table id="schedule" class="table table-striped table-hover table-responsive tablesorter">
+                <thead>
+                    <tr>
+                        <th>Määränpää</th>
+                        <th>I.</th>
+                        <th>II.</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <p><a href="#" class="btn btn-lg btn-primary" id="backToIndex">Etusivulle</a></p>
+        </div>
+        <div class="jumbotron view hidden" id="timerView">
+            <h2 class="busNo"></h2>
+            <p class="lead">saapuu pysäkille</p>
+            <h2 class="stopName"></h2>
+            <h2 class="timeLeft"></h2>
+            <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
+        </div>
+        <div class="footer">
+            <p>© alizbazar 2014</p>
+        </div>
+    </div>
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
+     <script>
+
+     $('#schedule').tablesorter({sortList: [[1,0]]});
+     $('#follow').click(function(e) {
+        var pageUrl = $('#pageUrl').val();
+        if (pageUrl.indexOf('http') != 0) {
+            alert('Pysäkkisivun osoite -kentässä on oltava WWW-osoite');
+            return;
+        }
+
+        // Because URL is fetched explicitly, clear possible timer
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        $('.view').not('#scheduleView').toggleClass('hidden', true);
+        $('#scheduleView').toggleClass('hidden', false);
+        renderSchedules(pageUrl);
+
+        e.preventDefault();
+     });
+     function parseUrl(url) {
+
+        return {pageUrl: url};
+     }
+     var timer = null;
+     function renderSchedules(pageUrl) {
+        var scheduleView = $('#scheduleView');
+        if (pageUrl) {
+            var pageData = parseUrl(pageUrl);
+        } else {
+            var pageData = scheduleView.data('pageData');
+        }
+        // TODO: validate pagedata
+        if (pageUrl) {
+            window.location.hash = pageUrl;
+        }
+        scheduleView.data('pageData', pageData);
+        $.ajax({
+            url: "http://tools.alizweb.com/busatstop/getData.php",
+            dataType: "jsonp",
+            data: pageData,
+            success: function(response) {
+                var data = response.data;
+                // Render view
+                timerWatch.updateData(data);
+                timer = setTimeout(renderSchedules, 15000);
+
+                if ($('#scheduleView').hasClass('hidden')) {
+                    return;
+                }
+
+                $('#stopName').text(data.stopname);
+                var tbody = $('#schedule tbody');
+                tbody.empty();
+                $.each(data.lines, function(i, line) {
+                    var tr = $('<tr>').data('destination', line.destination);
+                    $('<td>').addClass('destination').html(line.destination).appendTo(tr);
+                    $('<td>').addClass('timeEstimate').text(line.timeEstimate).appendTo(tr);
+                    $('<td>').addClass('nextTimeEstimate').text(line.nextTimeEstimate).appendTo(tr);
+                    tr.appendTo(tbody);
+                });
+                
+                $('#schedule').trigger('update');
+            },
+            error: function() {
+                $('#scheduleView').toggleClass('hidden', true);
+                $('#indexView').toggleClass('hidden', false);
+            }
+        });
+     }
+
+     $('#schedule tbody').on('click', function(e) {
+        var destination = $(e.target).closest('tr').data('destination');
+        if (destination)
+            timerWatch.init(destination);
+     });
+
+     $('#backToIndex').click(function() {
+        clearTimeout(timer);
+        $('.view').not('#indexView').toggleClass('hidden', true);
+        $('#indexView').toggleClass('hidden', false);
+     });
+
+     $('#backToSchedule').click(function() {
+        $('.view').not('#scheduleView').toggleClass('hidden', true);
+        $('#scheduleView').toggleClass('hidden', false);
+     });
+
+     $('.quickLink').click(function(e) {
+        var url = $(this).attr('href');
+        console.log(url);
+        renderSchedules(url);
+        $('.view').not('#scheduleView').toggleClass('hidden', true);
+        $('#scheduleView').toggleClass('hidden', false);
+        e.preventDefault();
+     });
+
+     var timerWatch = (function() {
+        var data, destination;
+        var $view = $('#timerView');
+        var lastTimeLeft;
+
+        var timeTable = {};
+
+        function updateTimer(minutesLeft) {
+            lastTimeLeft = minutesLeft;
+            if (minutesLeft.indexOf('~') == 0) {
+                minutesLeft = minutesLeft.substring(1);
+            }
+            minutesLeft = parseInt(minutesLeft, 10);
+
+            var $timer = $view.find('.timeLeft');
+            if (minutesLeft < 4) {
+                $timer.toggleClass('run', true).toggleClass('walk', false);
+            } else if (minutesLeft < 7) {
+                $timer.toggleClass('walk', true).toggleClass('run', false);
+            } else {
+                $timer.toggleClass('run', false).toggleClass('walk', false);
+            }
+
+            var time = new Date().getTime();
+            time += minutesLeft * 60 * 1000;
+            if ($timer.hasClass('hasCountdown')) {
+                $timer.countdown('option', 'until', new Date(time));
+            } else {
+                $timer.countdown({compact: true, format: 'MS', padZeroes: true, until: new Date(time)});
+            }
+        };
+
+        return {
+            'init': function(dest, latestData) {
+                if (latestData) {
+                    data = latestData;
+                }
+                if (!data) {
+                    return;
+                }
+                destination = dest;
+                $view.find('.busNo').html(destination);
+                $view.find('.stopName').html(data.stopname);
+                $('.view').not($view).toggleClass('hidden', true);
+                $view.toggleClass('hidden', false);
+                this.updateData(data);
+            },
+            'updateData': function(latestData) {
+                data = latestData;
+                if (!destination || $view.hasClass('hidden')) {
+                    return;
+                }
+                var newTimeLeft;
+                $.each(data.lines, function(i, line) {
+                    if (line.destination == destination) {
+                        newTimeLeft = line.timeEstimate;
+                        return false;
+                    }
+                });
+                if (newTimeLeft != lastTimeLeft) {
+                    updateTimer(newTimeLeft);
+                }
+            }
+        }
+     }());
+     var hash = window.location.hash;
+     if (hash && hash.length > 1) {
+        var url = hash.substring(1);
+        renderSchedules(url);
+     } else {
+        $('.view').not('#indexView').toggleClass('hidden', true);
+        $('#indexView').toggleClass('hidden', false);
+     }
+     </script>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-countdown/1.6.3/jquery.countdown.min.js"></script>
+</body>
+</html>
