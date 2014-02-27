@@ -13,6 +13,13 @@
     <link rel="shortcut icon" sizes="196x196" href="icons/hsl-bus.png">
     <link rel="shortcut icon" href="icons/hsl-bus.png">
 
+    <meta name="og:type" content="website" />
+    <meta name="og:image" content="http://alizweb.s3.amazonaws.com/busstop/icons/hsl-bus.png?v=1"/>
+    <meta name="og:title" content="Bussipysäkillä - Seuraa pysäkillesi saapuvia busseja" />
+    <meta name="og:description" content="Seuraa reaaliajassa pysäkille saapuvia busseja, joissa on HELMI laite asennettuna" />
+    <meta name="og:url" content="http://alizweb.s3.amazonaws.com/busstop/index.html"/>
+
+
     <!-- Tile icon for Win8 (144x144 + tile color) --> 
     <meta name="msapplication-TileImage" content="icons/hsl-bus-144.png">
     <meta name="msapplication-TileColor" content="#007ac9">
@@ -53,6 +60,10 @@
     .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
         background-color: #e0f4ff;
     }
+    #scheduleView .info-sub-text {
+        margin-bottom: 4px;
+        font-size: 15px;
+    }
     </style>
 </head>
 <body>
@@ -62,7 +73,7 @@
             <p class="lead">Löydä bussipysäkki <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
             <div class="form-group">
                 <label for="pageUrl">Pysäkkisivun osoite:</label>
-                <input type="url" id="pageUrl" class="form-control" value="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" />
+                <input type="url" id="pageUrl" class="form-control" value="" placeholder="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" />
             </div>
             <p><a href="#" class="btn btn-lg btn-primary" id="follow">Seuraa</a></p>
             <h4>Esimerkkipysäkkejä:</h4>
@@ -71,6 +82,7 @@
         </div>
         <div class="jumbotron view" id="scheduleView">
             <h2 id="stopName"></h2>
+            <p class="text-muted info-sub-text">Klikkaa bussia seurataksesi sen saapumista</p>
             <table id="schedule" class="table table-striped table-hover table-responsive tablesorter">
                 <thead>
                     <tr>
@@ -91,7 +103,7 @@
             <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
         </div>
         <div class="footer">
-            <p>© alizbazar 2014</p>
+            <p>© alizbazar 2014 | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></p>
         </div>
     </div>
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -99,9 +111,12 @@
      <script>
 
      $('#schedule').tablesorter({sortList: [[1,0]]});
+
      $('#follow').click(function(e) {
         var pageUrl = $('#pageUrl').val();
-        if (pageUrl.indexOf('http') != 0) {
+        if (!pageUrl) {
+            pageUrl = $('#pageUrl').attr('placeholder');
+        } else if (pageUrl.indexOf('http') != 0) {
             alert('Pysäkkisivun osoite -kentässä on oltava WWW-osoite');
             return;
         }
@@ -117,10 +132,13 @@
 
         e.preventDefault();
      });
+
      function parseUrl(url) {
 
         return {pageUrl: url};
      }
+
+
      var timer = null;
      function renderSchedules(pageUrl) {
         var scheduleView = $('#scheduleView');
@@ -148,7 +166,7 @@
                     return;
                 }
 
-                $('#stopName').text(data.stopname);
+                $('#stopName').html(data.stopname);
                 var tbody = $('#schedule tbody');
                 tbody.empty();
                 $.each(data.lines, function(i, line) {
@@ -187,7 +205,6 @@
 
      $('.quickLink').click(function(e) {
         var url = $(this).attr('href');
-        console.log(url);
         renderSchedules(url);
         $('.view').not('#scheduleView').toggleClass('hidden', true);
         $('#scheduleView').toggleClass('hidden', false);
@@ -259,6 +276,7 @@
             }
         }
      }());
+
      var hash = window.location.hash;
      if (hash && hash.length > 1) {
         var url = hash.substring(1);
