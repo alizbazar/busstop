@@ -1,5 +1,8 @@
 CACHE MANIFEST
 index.html
+icons/star-icon-36.png
+icons/star-icon-empty-36.png
+
 //netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css
 //ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 //cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js
@@ -9,4 +12,4 @@ NETWORK:
 *
 
 
-# ver 1.024
+# ver 1.029

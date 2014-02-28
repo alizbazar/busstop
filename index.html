@@ -24,6 +24,8 @@
     <meta name="og:title" content="Bussipysäkillä - Seuraa pysäkillesi saapuvia busseja" />
     <meta name="og:description" content="Seuraa reaaliajassa pysäkille saapuvia busseja, joissa on HELMI laite asennettuna" />
     <meta name="og:url" content="http://alizweb.s3.amazonaws.com/busstop/index.html"/>
+    <meta property="fb:app_id" content="1427462937496382" />
+    <meta property="fb:admins" content="706327167" />
 
     <!-- non-retina iPhone pre iOS 7 -->
     <link rel="apple-touch-icon" href="icons/bus-57.png" sizes="57x57">
@@ -86,24 +88,66 @@
         margin-bottom: 4px;
         font-size: 15px;
     }
+
+    #starStop {
+        display: inline-block;
+        width: 46px;
+        height: 36px;
+        margin-left: 10px;
+        background: url('icons/star-icon-empty-36.png') no-repeat top left;
+        margin-bottom: -4px;
+    }
+
+    #starStop.starred {
+        background-image: url('icons/star-icon-36.png');
+    }
+
+    #starList {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    #starList li {
+        margin-top: 16px;
+    }
+
+    #sourceLink, .fb-like {
+        display: inline;
+    }
+
+    @media screen and (max-width: 600px) {
+        #sourceLink {
+            display: none;
+        }
+    }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="jumbotron hidden view" id="indexView">
-            <h1>Seuraa bussin saapumista pysäkille</h1>
-            <p class="lead">Löydä bussipysäkki <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
+            <div class="firstUseView">
+                <h1>Seuraa bussin saapumista pysäkille</h1>
+                <p class="lead">Löydä bussipysäkki <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
+            </div>
+            <div id="withFavoritestView" class="hidden">
+                <h2>Suosikkipysäkit</h2>
+                <ul id="starList"></ul>
+                <h2>Seuraa uutta pysäkkiä:</h2>
+                <p>Hae pysäkkisivun osoite <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a></p>
+            </div>
             <div class="form-group">
                 <label for="pageUrl">Pysäkkisivun osoite:</label>
                 <input type="url" id="pageUrl" class="form-control" value="" placeholder="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" />
             </div>
             <p><a href="#" class="btn btn-lg btn-primary" id="follow">Seuraa</a></p>
-            <h4>Esimerkkipysäkkejä:</h4>
-            <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4043&stopname=Palkkatilanportti@L%F6nebost%E4llsporten&dir=2" class="btn btn-success quickLink" id="follow">Palkkatilanportti</a></p>
-            <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" class="btn btn-success quickLink" id="follow">Konemies</a></p>
+            <div class="firstUseView">
+                <h4>Esimerkkipysäkkejä:</h4>
+                <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4043&stopname=Palkkatilanportti@L%F6nebost%E4llsporten&dir=2" class="btn btn-success quickLink" id="follow">Palkkatilanportti</a></p>
+                <p><a href="http://www.thoreb.se/webdeparture/HKL/358/dep.asp?line=506&stopno=4074&stopname=Konemies@Maskinbyggaren&dir=2" class="btn btn-success quickLink" id="follow">Konemies</a></p>
+            </div>
         </div>
         <div class="jumbotron view" id="scheduleView">
-            <h2 id="stopName"></h2>
+            <h2><span id="stopName"></span><a href="#" id="starStop"></a></h2>
             <p class="text-muted info-sub-text">Klikkaa bussia seurataksesi sen saapumista</p>
             <table id="schedule" class="table table-striped table-hover table-responsive tablesorter">
                 <thead>
@@ -125,9 +169,11 @@
             <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
         </div>
         <div class="footer">
-            <a href="http://www.twitter.com/alizbazar" target="_blank" class="text-muted">@alizbazar</a> 2014 | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a> | <div class="fb-like" data-href="http://alizweb.s3.amazonaws.com/busstop/index.html" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
+            <!--<div class="fb-like" data-href="http://alizweb.s3.amazonaws.com/busstop/index.html" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div> | --><a href="http://www.twitter.com/alizbazar" target="_blank" class="text-muted">@alizbazar</a> 2014<div id="sourceLink"> | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></div>
         </div>
     </div>
+    <!-- FB Like gives "suspicious URL" error for amazon url
+
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
@@ -135,12 +181,81 @@
       js = d.createElement(s); js.id = id;
       js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1427462937496382";
       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    }(document, 'script', 'facebook-jssdk'));</script>-->
+
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
      <script>
 
      $('#schedule').tablesorter({sortList: [[1,0]]});
+
+     var favorites = (function() {
+
+        var save = function() {
+            if (!JSON || !window.localStorage) {
+                return false;
+            }
+            window.localStorage.setItem('busatstop', JSON.stringify(data));
+            return true;
+        };
+
+        var controls = {
+            add: function(stop, onlyDOM) {
+                var stopDomItem = $('<li>').data('stopName', stop.name);
+                $('<a>').attr('href', stop.url).addClass('quickLink btn btn-success').html(stop.name).appendTo(stopDomItem);
+                $('#starList').append(stopDomItem);
+                $('.firstUseView').toggleClass('hidden', true);
+                $('#withFavoritestView').toggleClass('hidden', false);
+
+                if (onlyDOM) {
+                    return true;
+                }
+                data[stop.name] = stop.url;
+                return save();
+            },
+            remove: function(stopName) {
+                delete data[stopName];
+                $('#starList').find('li').each(function(i, item) {
+                    var $item = $(item);
+                    if ($item.data('stopName') == stopName) {
+                        $item.remove();
+                        return false;
+                    }
+                });
+                if (this.isEmpty()) {
+                    $('#withFavoritestView').toggleClass('hidden', true);
+                    $('.firstUseView').toggleClass('hidden', false);
+                }
+                return save();
+            },
+            has: function(stopName) {
+                return !!data[stopName];
+            },
+            isEmpty: function() {
+                return Object.keys(data).length == 0;
+            }
+        };
+
+        // Init data table rightaway on loading
+        var data = (function() {
+            if (!JSON || !window.localStorage) {
+                return {};
+            }
+            var retrieved = window.localStorage.getItem('busatstop');
+            if (!!retrieved) {
+                return JSON.parse(retrieved);
+            }
+            return {};
+        }());
+
+        if (!controls.isEmpty()) {
+            $.each(data, function(name, url) {
+                controls.add({"name": name, "url": url}, true);
+            });
+        }
+
+        return controls;
+     }());
 
      $('#follow').click(function(e) {
         var pageUrl = $('#pageUrl').val();
@@ -169,8 +284,8 @@
         return {pageUrl: url};
      }
 
-
      var timer = null;
+     var currentStop = {};
      function renderSchedules(pageUrl) {
         var scheduleView = $('#scheduleView');
         if (pageUrl) {
@@ -198,6 +313,8 @@
                 }
 
                 $('#stopName').html(data.stopname);
+                $('#starStop').toggleClass('starred', favorites.has(data.stopname));
+                currentStop = {"name": data.stopname, "url": pageUrl};
                 var tbody = $('#schedule tbody');
                 tbody.empty();
                 $.each(data.lines, function(i, line) {
@@ -217,6 +334,28 @@
         });
      }
 
+     $('#starStop').click(function(e) {
+        $star = $(this);
+        // get current stop
+        if (!currentStop) {
+            return false;
+        }
+
+        if (favorites.has(currentStop.name)) {
+            favorites.remove(currentStop.name);
+            $star.toggleClass('starred', false);
+        } else {
+            favorites.add(currentStop);
+            $star.toggleClass('starred', true);
+
+        }
+        // check if it's starred
+        // unstar / star to localstorage
+        // change star state
+        // change frontpage view state
+        e.preventDefault();
+     });
+
      $('#schedule tbody').on('click', function(e) {
         var destination = $(e.target).closest('tr').data('destination');
         if (destination)
@@ -234,7 +373,7 @@
         $('#scheduleView').toggleClass('hidden', false);
      });
 
-     $('.quickLink').click(function(e) {
+     $('#indexView').on('click', 'a.quickLink', function(e) {
         var url = $(this).attr('href');
         renderSchedules(url);
         $('.view').not('#scheduleView').toggleClass('hidden', true);
