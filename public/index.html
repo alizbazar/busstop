@@ -308,10 +308,6 @@
                 timerWatch.updateData(data);
                 timer = setTimeout(renderSchedules, 15000);
 
-                if ($('#scheduleView').hasClass('hidden')) {
-                    return;
-                }
-
                 $('#stopName').html(data.stopname);
                 $('#starStop').toggleClass('starred', favorites.has(data.stopname));
                 currentStop = {"name": data.stopname, "url": pageUrl};
