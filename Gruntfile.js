@@ -34,7 +34,7 @@ module.exports = function(grunt) {
         src: [
           'index.html'
         ],
-        dest: 'public/manifest.appcache'
+        dest: 'manifest.appcache'
       }
     },
 
@@ -55,9 +55,20 @@ module.exports = function(grunt) {
         },
         files: [
           {expand: true, cwd: 'public/', src: ['**', '!manifest.appcache'], dest: ''},
-          {expand: true, cwd: 'public/', src: ['manifest.appcache'], dest: '', params: {"CacheControl": "no-cache"} }
+          {expand: true, cwd: '', src: ['manifest.appcache'], dest: '', params: {"CacheControl": "no-cache"} }
         ]
-      }
+      },
+
+      staging: {
+        options: {
+          bucket: '<%= privateConfig.awsStagingBucket %>',
+          differential: true // Only uploads the files that have changed
+        },
+        files: [
+          {expand: true, cwd: 'public/', src: ['**', '!manifest.appcache'], dest: 'busatstop/'},
+          // {expand: true, cwd: 'public/', src: ['manifest.appcache'], dest: '', params: {"CacheControl": "no-cache"} }
+        ]
+      },
     },
     // concat: {
     //   options: {
@@ -128,5 +139,7 @@ module.exports = function(grunt) {
   // Default task.
   // grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
 
-  grunt.registerTask('upload', ['manifest', 'aws_s3']);
+  grunt.registerTask('upload', ['manifest', 'aws_s3:production']);
+
+  grunt.registerTask('stage', ['aws_s3:staging']);
 };
