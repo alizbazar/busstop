@@ -6,7 +6,7 @@
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
     <meta http-equiv="cleartype" content="on">
-    <title>Bussipysäkillä</title>
+    <title>Bussi.Mobi</title>
     <link rel="shortcut icon" sizes="196x196" href="icons/bus-196.png">
     <link rel="shortcut icon" href="icons/bus-196.png">
 
@@ -20,10 +20,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <meta name="og:type" content="website" />
-    <meta name="og:image" content="http://alizweb.s3.amazonaws.com/busstop/icons/bus-196.png?v=1"/>
-    <meta name="og:title" content="Bussipysäkillä - Seuraa pysäkillesi saapuvia busseja" />
+    <meta name="og:image" content="http://bussi.mobi/icons/bus-196.png?v=1"/>
+    <meta name="og:title" content="Bussi.Mobi - Seuraa pysäkillesi saapuvia busseja" />
     <meta name="og:description" content="Seuraa reaaliajassa pysäkille saapuvia busseja, joissa on HELMI laite asennettuna" />
-    <meta name="og:url" content="http://alizweb.s3.amazonaws.com/busstop/index.html"/>
+    <meta name="og:url" content="http://bussi.mobi/index.html"/>
     <meta property="fb:app_id" content="1427462937496382" />
     <meta property="fb:admins" content="706327167" />
 
@@ -115,6 +115,53 @@
         display: inline;
     }
 
+    .attribution, .sharing-buttons {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .sharing-buttons ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        vertical-align: baseline;
+    }
+
+    .sharing-buttons li {
+        margin: 0 10px 0 0;
+        padding: 3px 0 0;
+        display: inline-block;
+    }
+
+    .sharing-buttons li.tweet {
+        margin-right: 0px;
+        position: relative;
+        top: 1px;
+    }
+
+    .sharing-buttons li.fb {
+        position: relative;
+        top: -1px;
+    }
+
+    .sharing-buttons div.fb-like {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        top: 2px;
+        border: 0;
+        height: 20px;
+        overflow: hidden;
+    }
+
+    .jumbotron {
+        margin-bottom: 10px;
+    }
+
+    #fb-root {
+        display: none;
+    }
+
     @media screen and (max-width: 600px) {
         #sourceLink {
             display: none;
@@ -169,19 +216,18 @@
             <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
         </div>
         <div class="footer">
-            <!--<div class="fb-like" data-href="http://alizweb.s3.amazonaws.com/busstop/index.html" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div> | --><a href="http://www.twitter.com/alizbazar" target="_blank" class="text-muted">@alizbazar</a> 2014<div id="sourceLink"> | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></div>
+            <div class="sharing-buttons">
+                <ul>
+                    <li class="fb"><div class="fb-like" data-href="http://bussi.mobi" data-width="70" data-layout="button" data-action="like" data-show-faces="false" data-share="false" data-font="arial"></div></li>
+
+                    <li class="tweet"><a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-url="http://bussi.mobi" data-text="Seuraa bussin saapumista pysäkille reaaliajassa. Enää ei tarvitse koskaan myöhästyä bussista!">Tweet</a></li>
+                <ul/>
+            </div>
+            <div class="attribution text-muted">
+                <a href="http://www.twitter.com/alizbazar" target="_blank" class="text-muted">@alizbazar</a> 2014<div id="sourceLink"> | <a href="https://github.com/alizbazar/busstop" class="text-muted">Source</a></div>
+            </div>
         </div>
     </div>
-    <!-- FB Like gives "suspicious URL" error for amazon url
-
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1427462937496382";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>-->
 
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
@@ -455,15 +501,26 @@
      </script>
      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-countdown/1.6.3/jquery.countdown.min.js"></script>
 
+    <!-- Social Script loading -->
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1427462937496382";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+    <!-- Analytics -->
      <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-48496117-1', 'alizweb.s3.amazonaws.com');
+      ga('create', 'UA-48496117-1', 'bussi.mobi');
       ga('send', 'pageview');
-
     </script>
 </body>
 </html>
