@@ -1,0 +1,13 @@
+{
+  "title": "busstop",
+  "version": "0.1.1",
+  "author": "alizbazar",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-aws-s3": "~0.8.1",
+    "grunt-manifest": "~0.4.0"
+  }
+}
