@@ -2,3 +2,4 @@
 node_modules/**
 *.sublime-workspace
 private-config.json
+**/manifest.appcache
