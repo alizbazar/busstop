@@ -368,9 +368,10 @@
         $('#indexView').toggleClass('hidden', false);
      });
 
-     $('#backToSchedule').click(function() {
+     $('#backToSchedule').click(function(e) {
         $('.view').not('#scheduleView').toggleClass('hidden', true);
         $('#scheduleView').toggleClass('hidden', false);
+        e.preventDefault();
      });
 
      $('#indexView').on('click', 'a.quickLink', function(e) {
