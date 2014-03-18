@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions name='KAMO' targetNamespace='urn:seasam' xmlns='http://schemas.xmlsoap.org/wsdl/' xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' xmlns:tns='urn:seasam' xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+ <types>
+  <schema targetNamespace='urn:seasam' xmlns='http://www.w3.org/2001/XMLSchema' xmlns:soap11-enc='http://schemas.xmlsoap.org/soap/encoding/' xmlns:tns='urn:seasam' xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+   <import namespace='http://schemas.xmlsoap.org/soap/encoding/'/>
+   <complexType name='ArrayOfKAMOLine'>
+    <complexContent>
+     <restriction base='soap11-enc:Array'>
+      <attribute ref='soap11-enc:arrayType' wsdl:arrayType='tns:KAMOLine[]'/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name='KAMOLine'>
+    <sequence>
+     <element name='dest' type='string'/>
+     <element name='line' type='string'/>
+     <element name='route' type='string'/>
+    </sequence>
+   </complexType>
+   <complexType name='ArrayOfKAMODeparture'>
+    <complexContent>
+     <restriction base='soap11-enc:Array'>
+      <attribute ref='soap11-enc:arrayType' wsdl:arrayType='tns:KAMODeparture[]'/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name='KAMODeparture'>
+    <sequence>
+     <element name='dest' type='string'/>
+     <element name='id' type='string'/>
+     <element name='info' type='string'/>
+     <element name='line' type='string'/>
+     <element name='route' type='string'/>
+     <element name='rtime' type='string'/>
+     <element name='stop' type='string'/>
+     <element name='stopname' type='string'/>
+     <element name='time' type='string'/>
+    </sequence>
+   </complexType>
+   <complexType name='ArrayOfstring'>
+    <complexContent>
+     <restriction base='soap11-enc:Array'>
+      <attribute ref='soap11-enc:arrayType' wsdl:arrayType='string[]'/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name='ArrayOfKAMOStop'>
+    <complexContent>
+     <restriction base='soap11-enc:Array'>
+      <attribute ref='soap11-enc:arrayType' wsdl:arrayType='tns:KAMOStop[]'/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name='KAMOStop'>
+    <sequence>
+     <element name='addr' type='string'/>
+     <element name='id' type='string'/>
+     <element name='id2' type='string'/>
+     <element name='name' type='string'/>
+    </sequence>
+   </complexType>
+  </schema>
+ </types>
+ <message name='KAMOInterface_getNextDeparturesRTResponse' xmlns='http://schemas.xmlsoap.org/wsdl/'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesRTStops'>
+  <part name='arrayOfString_1' type='tns:ArrayOfstring'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesExtResponse'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getLinesResponse'>
+  <part name='result' type='tns:ArrayOfKAMOLine'></part>
+ </message>
+ <message name='KAMOInterface_getLines'>
+  <part name='String_1' type='xsd:string'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesExtRTResponse'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getStopInfoResponse'>
+  <part name='result' type='tns:ArrayOfKAMOStop'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesResponse'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getPassingTimesResponse'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesExtRT'>
+  <part name='String_1' type='xsd:string'></part>
+  <part name='Date_2' type='xsd:dateTime'></part>
+  <part name='int_3' type='xsd:int'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesRTStopsResponse'>
+  <part name='result' type='tns:ArrayOfKAMODeparture'></part>
+ </message>
+ <message name='KAMOInterface_getNextDepartures'>
+  <part name='String_1' type='xsd:string'></part>
+ </message>
+ <message name='KAMOInterface_getPassingTimes'>
+  <part name='String_1' type='xsd:string'></part>
+ </message>
+ <message name='KAMOInterface_getStopInfo'>
+  <part name='String_1' type='xsd:string'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesExt'>
+  <part name='String_1' type='xsd:string'></part>
+  <part name='Date_2' type='xsd:dateTime'></part>
+  <part name='int_3' type='xsd:int'></part>
+ </message>
+ <message name='KAMOInterface_getNextDeparturesRT'>
+  <part name='String_1' type='xsd:string'></part>
+ </message>
+ <portType name='KAMOInterface'>
+  <operation name='getLines' parameterOrder='String_1'>
+   <input message='tns:KAMOInterface_getLines'></input>
+   <output message='tns:KAMOInterface_getLinesResponse'></output>
+  </operation>
+  <operation name='getNextDepartures' parameterOrder='String_1'>
+   <input message='tns:KAMOInterface_getNextDepartures'></input>
+   <output message='tns:KAMOInterface_getNextDeparturesResponse'></output>
+  </operation>
+  <operation name='getNextDeparturesExt' parameterOrder='String_1 Date_2 int_3'>
+   <input message='tns:KAMOInterface_getNextDeparturesExt'></input>
+   <output message='tns:KAMOInterface_getNextDeparturesExtResponse'></output>
+  </operation>
+  <operation name='getNextDeparturesExtRT' parameterOrder='String_1 Date_2 int_3'>
+   <input message='tns:KAMOInterface_getNextDeparturesExtRT'></input>
+   <output message='tns:KAMOInterface_getNextDeparturesExtRTResponse'></output>
+  </operation>
+  <operation name='getNextDeparturesRT' parameterOrder='String_1'>
+   <input message='tns:KAMOInterface_getNextDeparturesRT'></input>
+   <output message='tns:KAMOInterface_getNextDeparturesRTResponse'></output>
+  </operation>
+  <operation name='getNextDeparturesRTStops' parameterOrder='arrayOfString_1'>
+   <input message='tns:KAMOInterface_getNextDeparturesRTStops'></input>
+   <output message='tns:KAMOInterface_getNextDeparturesRTStopsResponse'></output>
+  </operation>
+  <operation name='getPassingTimes' parameterOrder='String_1'>
+   <input message='tns:KAMOInterface_getPassingTimes'></input>
+   <output message='tns:KAMOInterface_getPassingTimesResponse'></output>
+  </operation>
+  <operation name='getStopInfo' parameterOrder='String_1'>
+   <input message='tns:KAMOInterface_getStopInfo'></input>
+   <output message='tns:KAMOInterface_getStopInfoResponse'></output>
+  </operation>
+ </portType>
+ <binding name='KAMOInterfaceBinding' type='tns:KAMOInterface'>
+  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/>
+  <operation name='getLines'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getNextDepartures'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getNextDeparturesExt'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getNextDeparturesExtRT'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getNextDeparturesRT'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getNextDeparturesRTStops'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getPassingTimes'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+  <operation name='getStopInfo'>
+   <soap:operation soapAction=''/>
+   <input>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </input>
+   <output>
+    <soap:body encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' namespace='urn:seasam' use='encoded'/>
+   </output>
+  </operation>
+ </binding>
+ <service name='KAMO'>
+  <port binding='tns:KAMOInterfaceBinding' name='KAMOInterfacePort'>
+   <soap:address location='http://hsl.trapeze.fi:80/interfaces/kamo'/>
+  </port>
+ </service>
+</definitions>

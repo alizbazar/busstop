@@ -32,7 +32,9 @@ module.exports = function(grunt) {
           // master: ['index.html'] 
         },
         src: [
-          'index.html'
+          'index.html',
+          'app.js',
+          'taffy-min.js'
         ],
         dest: 'manifest.appcache'
       }
