@@ -1,9 +1,25 @@
 <?php
+/**
+ Original source: https://github.com/samuelmr/hsldepartures
+**/
+
+header('Content-type: application/json');
+
+function respond($data) {
+  global $_GET;
+  if (isset($_GET['callback']) && strpos($_GET['callback'], '(') === FALSE) {
+      echo($_GET['callback'] . '(' . $data . ');');
+  } else {
+      echo($data);
+  }
+  die;
+}
 
  $kamo_url = 'http://omatlahdot.hkl.fi/interfaces/kamo';
  # $kamo_wsdl = "$kamo_url?wsdl"; // download this and save to ./local.wsdl
  $kamo_wsdl = "./local.wsdl";
- $stops = isset($_REQUEST['stops']) ? $_REQUEST['stops'] : array();
+ $stops = isset($_REQUEST['stops']) ? $_REQUEST['stops'] : 
+            isset($_REQUEST['stop']) ? array($_REQUEST['stop']) : array();
  $max = isset($_REQUEST['max']) ? $_REQUEST['max'] : 200;
 
  $deps = array();
@@ -28,6 +44,8 @@
 
  header('Access-Control-Allow-Origin: *');
  header('Content-type: application/json');
- echo json_encode($deps);
+ respond(json_encode($deps));
+
+
 
 ?>

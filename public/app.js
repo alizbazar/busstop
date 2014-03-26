@@ -1,12 +1,6 @@
 
  $('#schedule').tablesorter({sortList: [[1,0]]});
 
-window.console = {
-    log: function() {
-
-    }
-};
-
  var timetables = (function() {
      var schedules = {};
 
@@ -48,8 +42,6 @@ window.console = {
          });
 
          busses.sort("time asec");
-
-         console.log('imported timetables');
 
          return busses;
      };
@@ -132,7 +124,6 @@ window.console = {
         if (!JSON || !window.localStorage) {
             return false;
         }
-        console.log(data);
         window.localStorage.setItem('busatstop', JSON.stringify(data));
         return true;
     };
@@ -151,7 +142,6 @@ window.console = {
 
     var controls = {
         add: function(stop, onlyDOM) {
-            console.log('adding', stop);
             var stopDomItem = $('<li>').data('stopName', stop.name);
             if (stop.id && data[stop.id]) {
                 timetables.add(stop.id, data[stop.id].data);
@@ -277,7 +267,6 @@ function timeLeft(timeInSeconds) {
 
  var timer = null;
  function transformData(data) {
-    console.log('input', data);
     var res = {"stopname": data.stopname, "stopid": data[0].stop, "lines": []};
     res.stopname = data.stopname;
     var routes = {};
@@ -313,10 +302,10 @@ function timeLeft(timeInSeconds) {
         }
         res.lines.push(line)
     });
-    console.log('output', res);
     return res;
  }
  function renderSchedules(pageUrl) {
+    clearTimeout(timer);
     // FIX: this is bad...
     var isRefresh = !pageUrl;
     var scheduleView = $('#scheduleView');
@@ -355,10 +344,8 @@ function timeLeft(timeInSeconds) {
             currentStop = {"url": pageUrl, "name": rtData.stopname, "id": stopId};
             renderScheduleView(transformData(rtData));
         });
-        console.log('storedData', storedData);
         if (!isRefresh && storedData) {
             var stop = favorites.get(pageUrl);
-            console.log('stopFAv', stop);
             storedData.stopname = stop.name;
             renderScheduleView(transformData(storedData));
         }
@@ -442,12 +429,14 @@ function timeLeft(timeInSeconds) {
     };
 
     function updateStyling($timer, minutesLeft) {
-        if (minutesLeft !== null && minutesLeft < 4) {
-            $timer.toggleClass('run', true).toggleClass('walk', false);
-        } else if (minutesLeft !== null && minutesLeft < 7) {
-            $timer.toggleClass('walk', true).toggleClass('run', false);
+        if (minutesLeft === null) {
+            $timer.toggleClass('run', false).toggleClass('walk', false).toggleClass('offline', true);
+        } else if (minutesLeft < 4) {
+            $timer.toggleClass('run', true).toggleClass('walk', false).toggleClass('offline', false);
+        } else if (minutesLeft < 7) {
+            $timer.toggleClass('run', false).toggleClass('walk', true).toggleClass('offline', false);
         } else {
-            $timer.toggleClass('run', false).toggleClass('walk', false);
+            $timer.toggleClass('run', false).toggleClass('walk', false).toggleClass('offline', false);
         }
     }
 

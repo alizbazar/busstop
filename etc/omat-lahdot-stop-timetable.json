@@ -1,0 +1,101 @@
+[{
+    "dest": "It\u00e4keskus(M)",
+    "id": "1729499249",
+    "info": "",
+    "line": "550",
+    "route": "2550  2",
+    "rtime": "15:57:30",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395064650
+}, {
+    "dest": "Pohjois-Tapiola",
+    "id": "1729217161",
+    "info": "",
+    "line": "103",
+    "route": "2103  1",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395064740
+}, {
+    "dest": "Martinlaakso",
+    "id": "1729927303",
+    "info": "",
+    "line": "510",
+    "route": "5510  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395064800
+}, {
+    "dest": "It\u00e4keskus(M)",
+    "id": "1729499316",
+    "info": "",
+    "line": "550",
+    "route": "2550  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395064860
+}, {
+    "dest": "Puolarmets\u00e4",
+    "id": "1729026200",
+    "info": "",
+    "line": "10",
+    "route": "2010  1",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065040
+}, {
+    "dest": "It\u00e4keskus(M)",
+    "id": "1729499385",
+    "info": "",
+    "line": "550",
+    "route": "2550  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065100
+}, {
+    "dest": "Pohjois-Tapiola",
+    "id": "1729459242",
+    "info": "",
+    "line": "506",
+    "route": "2506  1",
+    "rtime": "16:05:45",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065145
+}, {
+    "dest": "It\u00e4keskus(M)",
+    "id": "1729499480",
+    "info": "",
+    "line": "550",
+    "route": "2550  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065400
+}, {
+    "dest": "Martinlaakso",
+    "id": "1729927408",
+    "info": "",
+    "line": "510",
+    "route": "5510  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065640
+}, {
+    "dest": "It\u00e4keskus(M)",
+    "id": "1729499545",
+    "info": "",
+    "line": "550",
+    "route": "2550  2",
+    "rtime": "",
+    "stop": "2222222",
+    "stopname": "Konemies",
+    "time": 1395065700
+}]

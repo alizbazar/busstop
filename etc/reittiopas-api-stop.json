@@ -1,0 +1,83 @@
+[{
+    "code": "2222222",
+    "code_short": "E2217",
+    "name_fi": "Konemies",
+    "name_sv": "Maskinbyggaren",
+    "city_fi": "Espoo",
+    "city_sv": "Esbo",
+    "lines": ["2010  1:Puolarmets\u00e4", "2010K 1:Puolarmets\u00e4", "2103  1:Pohjois-Tapiola", "2103T 1:Pohjois-Tapiola", "2506  1:Pohjois-Tapiola", "2550  2:It\u00e4keskus, lait. 22", "5510  2:Martinlaakso, lait.2"],
+    "coords": "2545860,6675272",
+    "wgs_coords": "24.82324,60.18629",
+    "accessibility": {
+        "width_tilt": 0,
+        "length_tilt": 0,
+        "min_width": 0,
+        "max_width": 0,
+        "depth": 0,
+        "curb_height_road": 0,
+        "curb_height_sidewalk": 0,
+        "rear_railing_height": 0,
+        "protecting_height": 0,
+        "lower_moulding": 0,
+        "bench_height": 0,
+        "trash_can": 0,
+        "danger": 0,
+        "shelter": 0,
+        "light": 0,
+        "warning_area": 0,
+        "difference_warning_area": 0,
+        "difference_waiting_area": 0,
+        "unobstructed_access": 0,
+        "cycle_track_included": 0,
+        "cycle_track_position": 0,
+        "stop_model": 0,
+        "accessibility": 0,
+        "class": 4,
+        "notes": ""
+    },
+    "departures": [{
+        "code": "2550  2",
+        "time": 1445,
+        "date": 20140317
+    }, {
+        "code": "2550  2",
+        "time": 1449,
+        "date": 20140317
+    }, {
+        "code": "5510  2",
+        "time": 1450,
+        "date": 20140317
+    }, {
+        "code": "2550  2",
+        "time": 1453,
+        "date": 20140317
+    }, {
+        "code": "2103T 1",
+        "time": 1455,
+        "date": 20140317
+    }, {
+        "code": "2550  2",
+        "time": 1457,
+        "date": 20140317
+    }, {
+        "code": "2506  1",
+        "time": 1500,
+        "date": 20140317
+    }, {
+        "code": "2550  2",
+        "time": 1501,
+        "date": 20140317
+    }, {
+        "code": "5510  2",
+        "time": 1502,
+        "date": 20140317
+    }, {
+        "code": "2010K 1",
+        "time": 1504,
+        "date": 20140317
+    }],
+    "timetable_link": "http:\/\/aikataulut.hsl.fi\/pysakit\/fi\/2222222.html",
+    "omatlahdot_link": "http:\/\/www.omatlahdot.fi\/omatlahdot\/web?command=quicksearch&stopid=2222222&lang=1",
+    "address_fi": "Otaniementie",
+    "address_sv": "Otn\u00e4sv\u00e4gen"
+}]
