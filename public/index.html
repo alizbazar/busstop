@@ -48,148 +48,30 @@
     <meta name="msapplication-TileImage" content="icons/bus-144.png">
     <meta name="msapplication-TileColor" content="#007ac9">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <style>
-    .container {
-        text-align: center;
-    }
-    #schedule {
-        text-align: left;
-    }
-    h2.timeLeft {
-        font-size: 70px;
-        padding-bottom: 20px;
-        color: #3276B1;
-    }
-    h2.timeLeft.walk {
-        color: #dbc625;
-    }
-    h2.timeLeft.run {
-        color: #af3333;
-    }
-    h2.timeLeft.offline {
-        color: #999;
-    }
-    .view h1:first-child, .view h2:first-child {
-        margin-top: 0;
-    }
-    .jumbotron {
-        margin-top: 10px;
-    }
-    #schedule tbody tr {
-        cursor: pointer;
-    }/*
-    #schedule tbody tr:hover {
-        background-color: #c7dced;
-    }
-    #schedule tbody td:hover {
-        background-color: #c7dced;
-    }*/
-    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-        background-color: #e0f4ff;
-    }
-    #scheduleView .info-sub-text {
-        margin-bottom: 4px;
-        font-size: 15px;
-    }
-
-    #starStop {
-        display: inline-block;
-        width: 46px;
-        height: 36px;
-        margin-left: 10px;
-        background: url('icons/star-icon-empty-36.png') no-repeat top left;
-        margin-bottom: -4px;
-    }
-
-    #starStop.starred {
-        background-image: url('icons/star-icon-36.png');
-    }
-
-    #starList {
-        list-style-type: none;
-        padding-left: 0;
-    }
-
-    #starList li {
-        margin-top: 16px;
-    }
-
-    #sourceLink, .fb-like {
-        display: inline;
-    }
-
-    .attribution, .sharing-buttons {
-        text-align: center;
-        margin-bottom: 5px;
-    }
-
-    .sharing-buttons ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        vertical-align: baseline;
-    }
-
-    .sharing-buttons li {
-        margin: 0 10px 0 0;
-        padding: 3px 0 0;
-        display: inline-block;
-    }
-
-    .sharing-buttons li.tweet {
-        margin-right: 0px;
-        position: relative;
-        top: 1px;
-    }
-
-    .sharing-buttons li.fb {
-        position: relative;
-        top: -1px;
-    }
-
-    .sharing-buttons div.fb-like {
-        margin: 0;
-        padding: 0;
-        position: relative;
-        top: 2px;
-        border: 0;
-        height: 20px;
-        overflow: hidden;
-    }
-
-    .jumbotron {
-        margin-bottom: 10px;
-    }
-
-    #fb-root {
-        display: none;
-    }
-
-    @media screen and (max-width: 600px) {
-        #sourceLink {
-            display: none;
-        }
-    }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="jumbotron hidden view" id="indexView">
             <div class="firstUseView">
                 <h1>Seuraa bussin saapumista pysäkille</h1>
-                <p class="lead">Löydä bussipysäkki <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
+                <p class="lead">Löydä bussipysäkki <a href="http://aikataulut.reittiopas.fi/pysakit" target="_blank">täältä</a>, kopioi pysäkkisivun osoite ja liitä ao. kenttään:</p>
             </div>
             <div id="withFavoritestView" class="hidden">
                 <h2>Suosikkipysäkit</h2>
                 <ul id="starList"></ul>
                 <h2>Seuraa uutta pysäkkiä:</h2>
-                <p>Hae pysäkkisivun osoite <a href="http://www.thoreb.se/webdeparture/HKL/358/main.asp" target="_blank">täältä</a></p>
             </div>
-            <div class="form-group">
-                <label for="pageUrl">Pysäkkisivun osoite:</label>
-                <input type="text" id="pageUrl" class="form-control" value="" placeholder="2222222" />
-            </div>
-            <p><a href="#" class="btn btn-lg btn-primary" id="follow">Seuraa</a></p>
+            <form id="selectStop">
+                <div class="form-group">
+                    <label for="pageUrl">Pysäkin nimi:</label>
+                    <input type="text" id="pageUrl" class="form-control typeahead" value="" placeholder="Konemies (E2217)" />
+                    <datalist id="stoplist">
+                        <option value="Konemies (E2217)" data-stopid="2222222" id="stop-E2217"></option>
+                    </datalist>
+                </div>
+                <p><button type="submit" class="btn btn-lg btn-primary" id="follow">Seuraa</button></p>
+            </form>
             <div class="firstUseView">
                 <h4>Esimerkkipysäkkejä:</h4>
                 <p><a href="#1171153" class="btn btn-success quickLink" id="follow">Palkkatilanportti</a></p>

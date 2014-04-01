@@ -1,0 +1,212 @@
+
+.container {
+    text-align: center;
+}
+
+/** TYPEAHEAD **/
+.typeahead,
+.tt-query,
+.tt-hint {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  font-size: 24px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+span.twitter-typeahead {
+    display: block !important;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+  width: 100%;
+  text-align: left;
+  margin-top: 4px;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.gist {
+  font-size: 14px;
+}
+
+
+#schedule {
+    text-align: left;
+}
+h2.timeLeft {
+    font-size: 70px;
+    padding-bottom: 20px;
+    color: #3276B1;
+}
+h2.timeLeft.walk {
+    color: #dbc625;
+}
+h2.timeLeft.run {
+    color: #af3333;
+}
+h2.timeLeft.offline {
+    color: #999;
+}
+.view h1:first-child, .view h2:first-child {
+    margin-top: 0;
+}
+.jumbotron {
+    margin-top: 10px;
+}
+#schedule tbody tr {
+    cursor: pointer;
+}/*
+#schedule tbody tr:hover {
+    background-color: #c7dced;
+}
+#schedule tbody td:hover {
+    background-color: #c7dced;
+}*/
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #e0f4ff;
+}
+#scheduleView .info-sub-text {
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+#starStop {
+    display: inline-block;
+    width: 46px;
+    height: 36px;
+    margin-left: 10px;
+    background: url('icons/star-icon-empty-36.png') no-repeat top left;
+    margin-bottom: -4px;
+}
+
+#starStop.starred {
+    background-image: url('icons/star-icon-36.png');
+}
+
+#starList {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#starList li {
+    margin-top: 16px;
+}
+
+#indicator {
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+#indicator.reset {
+    background-color: hsla(138, 55%, 44%, 0.7);
+}
+
+#sourceLink, .fb-like {
+    display: inline;
+}
+
+.attribution, .sharing-buttons {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.sharing-buttons ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    vertical-align: baseline;
+}
+
+.sharing-buttons li {
+    margin: 0 10px 0 0;
+    padding: 3px 0 0;
+    display: inline-block;
+}
+
+.sharing-buttons li.tweet {
+    margin-right: 0px;
+    position: relative;
+    top: 1px;
+}
+
+.sharing-buttons li.fb {
+    position: relative;
+    top: -1px;
+}
+
+.sharing-buttons div.fb-like {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 2px;
+    border: 0;
+    height: 20px;
+    overflow: hidden;
+}
+
+.jumbotron {
+    margin-bottom: 10px;
+}
+
+#fb-root {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    #sourceLink {
+        display: none;
+    }
+}

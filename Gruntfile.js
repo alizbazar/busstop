@@ -34,7 +34,8 @@ module.exports = function(grunt) {
         src: [
           'index.html',
           'app.js',
-          'taffy-min.js'
+          'taffy-min.js',
+          'styles.css'
         ],
         dest: 'manifest.appcache'
       }
