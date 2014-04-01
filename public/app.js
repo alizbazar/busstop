@@ -129,6 +129,7 @@ var indicator = (function() {
              schedules[stopId] = importDb(data);
          },
          get: function(stopId, callback) {
+
              if (callback && navigator.onLine) {
                  this.fetchRealtimeSchedules(stopId, callback);
              }
@@ -275,12 +276,21 @@ var indicator = (function() {
     return controls;
  }());
 
- $('#follow').click(function(e) {
-    var pageUrl = $('#pageUrl').val();
+ $('#pageUrl').on('typeahead:selected', function() {
+    $('#selectStop').submit();
+ });
+
+ $('#selectStop').on('submit', function(e) {
+    var $pageUrl = $('#pageUrl');
+    var pageUrl = $pageUrl.val();
     if (!pageUrl) {
-        pageUrl = $('#pageUrl').attr('placeholder');
-    } else if (pageUrl.indexOf('http') != 0 && isNaN(pageUrl)) {
-        alert('Pysäkkisivun osoite -kentässä on oltava WWW-osoite');
+        pageUrl = $pageUrl.attr('placeholder');
+    }
+    if (pageUrl.indexOf('(') !== -1) {
+       var shortcode = pageUrl.substring(pageUrl.indexOf('(') + 1, pageUrl.indexOf(')'));
+       var stopid = stopmap[shortcode];
+    } else {
+        alert('Valitse pysäkin nimi ehdotetuista vaihtoehdoista');
         return;
     }
 
@@ -291,9 +301,12 @@ var indicator = (function() {
 
     $('.view').not('#scheduleView').toggleClass('hidden', true);
     $('#scheduleView').toggleClass('hidden', false);
-    renderSchedules(pageUrl);
+    window.scrollTo(0,0);
+    $pageUrl.val('');
+    renderSchedules(stopid);
 
     ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', pageUrl);
+
     e.preventDefault();
  });
 
@@ -380,6 +393,7 @@ function timeLeft(timeInSeconds) {
         scheduleView.data('pageData', pageData);
     } else {
         var pageData = scheduleView.data('pageData');
+        pageUrl = pageData.pageUrl;
     }
     // TODO: validate pagedata
     if (pageUrl) {
@@ -410,7 +424,7 @@ function timeLeft(timeInSeconds) {
             }
         });
     } else {
-        var stopId = pageUrl;
+        var stopId = pageData.pageUrl;
         var storedData = timetables.get(stopId, function(rtData) {
             // Real time data
             rtData.stopname = rtData[0].stopname;
@@ -418,6 +432,7 @@ function timeLeft(timeInSeconds) {
             renderScheduleView(transformData(rtData));
             indicator.update();
         });
+
         if (!isRefresh && storedData) {
             var stop = favorites.get(pageUrl);
             storedData.stopname = stop.name;
@@ -450,6 +465,46 @@ function timeLeft(timeInSeconds) {
     e.preventDefault();
  });
 
+ var stopmap = {"E2217": "2222222"};
+ var lastSuggestionTime;
+ var lastApiCall;
+ $('#pageUrl').typeahead({
+    minLength: 3,
+    highlight: true
+ },
+ {
+    source: function(query, cb) {
+        var time = new Date().getTime();
+        // Little throttling to avoid too many requests to the server
+        if (lastApiCall && (lastApiCall.state() == 'pending' || time - lastSuggestionTime < 300)) {
+            lastApiCall.done(function(res) {
+                updateSuggestions(res, cb, query);
+            });
+            return;
+        }
+
+        lastSuggestionTime = time;
+        lastApiCall = $.get('http://tools.alizweb.com/busatstop/stop-api.php', {"stop": query}, function(res) {
+            updateSuggestions(res, cb, query);
+        });
+    }
+ });
+
+ function updateSuggestions(res, cb, q) {
+    var $stoplist = $('#stoplist');
+    $stoplist.html('');
+    var suggestions = [];
+    $.each(res, function(k, stop) {
+        if (stop.name.toLowerCase().indexOf(q.toLowerCase()) === -1) {
+            return;
+        }
+        var displayName = stop.name + ' (' + stop['id2'] + ')';
+        suggestions.push({"value": displayName});
+        stopmap[stop['id2']] = stop.id;
+    });
+    cb(suggestions);
+ }
+
  $('#schedule tbody').on('click', function(e) {
     var destination = $(e.target).closest('tr').data('destination');
     if (destination)
@@ -463,6 +518,8 @@ function timeLeft(timeInSeconds) {
     if (timer) {
         timer.stop();
     }
+    window.scrollTo(0,0);
+    $('#pageUrl').val('');
  });
 
  $('#backToSchedule').click(function(e) {
@@ -473,10 +530,14 @@ function timeLeft(timeInSeconds) {
 
  $('#indexView').on('click', 'a.quickLink', function(e) {
     var url = $(this).attr('href');
+    if (url[0] == '#') {
+        url = url.substring(1);
+    }
     renderSchedules(url);
     $('.view').not('#scheduleView').toggleClass('hidden', true);
     $('#scheduleView').toggleClass('hidden', false);
     e.preventDefault();
+    window.scrollTo(0,0);
  });
 
  var timerWatch = (function() {
@@ -570,6 +631,9 @@ function timeLeft(timeInSeconds) {
         }
     }
  }());
+
+
+/** Start app **/
 
  var hash = window.location.hash;
  if (hash && hash.length > 1) {

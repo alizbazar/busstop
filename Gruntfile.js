@@ -35,6 +35,7 @@ module.exports = function(grunt) {
           'index.html',
           'app.js',
           'taffy-min.js',
+          'typeahead.jquery.js',
           'styles.css'
         ],
         dest: 'manifest.appcache'
