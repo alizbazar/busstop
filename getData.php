@@ -1,6 +1,6 @@
 <?php
-header('Content-type: application/json');
 require_once 'simple_html_dom.php';
+require_once 'common.php';
 
 
 function cleanText($text) {
@@ -10,15 +10,6 @@ function cleanText($text) {
   return $text; 
 }
 
-function respond($data) {
-    global $_GET;
-    if (isset($_GET['callback']) && strpos($_GET['callback'], '(') === FALSE) {
-        echo($_GET['callback'] . '(' . $data . ');');
-    } else {
-        echo($data);
-    }
-    die;
-}
 
 function returnError($message) {
     $response = array('status' => 'fail', 'message' => $message);
