@@ -1,6 +1,73 @@
 
  $('#schedule').tablesorter({sortList: [[1,0]]});
 
+var runner = {
+  trackOffOn: function(callback) {
+    var check, errorMargin, interval, time, timer;
+    time = new Date().getTime();
+    interval = 2000;
+    errorMargin = 700;
+    check = function() {
+      var newtime, timer;
+      clearTimeout(timer);
+      newtime = new Date().getTime();
+      if ((newtime - time) > (interval + errorMargin)) {
+        callback();
+      }
+      time = newtime;
+      timer = setTimeout(check, interval);
+    };
+    timer = setTimeout(check, interval);
+    return {
+      timeSinceLastCheck: function() {
+        return new Date().getTime() - time;
+      },
+      stop: function() {
+        if (timer) {
+          clearTimeout(timer);
+        }
+      }
+    };
+  },
+  runEvery: function(seconds, callback) {
+    var fire, onOffTracker, timer;
+    timer = setTimeout(fire, seconds*1000);
+    fire = function() {
+      clearTimeout(timer);
+      if (callback) {
+        callback();
+      }
+      timer = setTimeout(fire, seconds*1000);
+    };
+    onOffTracker = runner.trackOffOn(fire);
+    return {
+      stop: function() {
+        clearTimeout(timer);
+        onOffTracker.stop();
+      }
+    };
+  }
+};
+
+var indicator = (function() {
+    var $indicator = $('<div>').attr('id', 'indicator').appendTo('body');
+    return {
+        update: function() {
+            clearTimeout(null);
+            // Immediately reset the color indicator
+            $indicator.css('transition', 'none');
+            $indicator.addClass('reset');
+            // For some reason timeout is needed to get the transition work correctly
+            setTimeout(function() {
+                // Fade out indicator in 10s
+                $indicator.css('transition', 'background-color 10s linear');
+                $indicator.removeClass('reset');
+            }, 20);
+        }
+    }
+}());
+
+
  var timetables = (function() {
      var schedules = {};
 
@@ -219,7 +286,7 @@
 
     // Because URL is fetched explicitly, clear possible timer
     if (timer) {
-        clearTimeout(timer);
+        timer.stop();
     }
 
     $('.view').not('#scheduleView').toggleClass('hidden', true);
@@ -305,7 +372,6 @@ function timeLeft(timeInSeconds) {
     return res;
  }
  function renderSchedules(pageUrl) {
-    clearTimeout(timer);
     // FIX: this is bad...
     var isRefresh = !pageUrl;
     var scheduleView = $('#scheduleView');
@@ -320,7 +386,14 @@ function timeLeft(timeInSeconds) {
         window.location.hash = pageUrl;
     }
 
-    if (isNaN(pageUrl)) {
+    if (!isRefresh) {
+        if (timer) {
+            timer.stop();
+        }
+        timer = runner.runEvery(15, renderSchedules);
+    }
+
+    if (isNaN(pageData.pageUrl)) {
         $.ajax({
             url: "http://tools.alizweb.com/busatstop/getData.php",
             dataType: "jsonp",
@@ -328,8 +401,8 @@ function timeLeft(timeInSeconds) {
             success: function(response) {
                 var data = response.data;
                 currentStop = {"name": data.stopname, "url": pageUrl};
-                timer = setTimeout(renderSchedules, 15000);
                 renderScheduleView(data);
+                indicator.update();
             },
             error: function() {
                 $('#scheduleView').toggleClass('hidden', true);
@@ -343,6 +416,7 @@ function timeLeft(timeInSeconds) {
             rtData.stopname = rtData[0].stopname;
             currentStop = {"url": pageUrl, "name": rtData.stopname, "id": stopId};
             renderScheduleView(transformData(rtData));
+            indicator.update();
         });
         if (!isRefresh && storedData) {
             var stop = favorites.get(pageUrl);
@@ -386,6 +460,9 @@ function timeLeft(timeInSeconds) {
     clearTimeout(timer);
     $('.view').not('#indexView').toggleClass('hidden', true);
     $('#indexView').toggleClass('hidden', false);
+    if (timer) {
+        timer.stop();
+    }
  });
 
  $('#backToSchedule').click(function(e) {
