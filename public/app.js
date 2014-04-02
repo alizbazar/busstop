@@ -211,6 +211,9 @@ var indicator = (function() {
     var controls = {
         add: function(stop, onlyDOM) {
             var stopDomItem = $('<li>').data('stopName', stop.name);
+            if (stop.id) {
+                stopDomItem.data('stopId', stop.id);
+            }
             if (stop.id && data[stop.id]) {
                 timetables.add(stop.id, data[stop.id].data);
             } else if (stop.id) {
@@ -220,7 +223,7 @@ var indicator = (function() {
                     save();
                 });
             }
-            $('<a>').attr('href', stop.url).addClass('quickLink btn btn-success').html(stop.name).appendTo(stopDomItem);
+            $('<a>').attr('href', '#' + stop.id).addClass('quickLink btn btn-success').html(stop.name).appendTo(stopDomItem);
             $('#starList').append(stopDomItem);
             $('.firstUseView').toggleClass('hidden', true);
             $('#withFavoritestView').toggleClass('hidden', false);
@@ -238,6 +241,7 @@ var indicator = (function() {
         remove: function(identifier) {
             var idType = isNaN(identifier) ? 'stopName' : 'stopId';
             delete data[identifier];
+
             $('#starList').find('li').each(function(i, item) {
                 var $item = $(item);
                 if ($item.data(idType) == identifier) {
@@ -433,7 +437,7 @@ function timeLeft(timeInSeconds) {
             indicator.update();
         });
 
-        if (!isRefresh && storedData) {
+        if (!isRefresh && storedData && storedData.length > 0) {
             var stop = favorites.get(pageUrl);
             storedData.stopname = stop.name;
             renderScheduleView(transformData(storedData));
