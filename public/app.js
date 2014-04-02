@@ -393,7 +393,7 @@ function timeLeft(timeInSeconds) {
     var routes = {};
     data.forEach(function(bus) {
         // Get only the human readable bus code and strip padding 0's
-        var lineNo = bus.route.substring(1,6).replace(/^[\s0]+|\s+$/g, '');
+        var lineNo = bus.line ? bus.line : bus.route.substring(1,6).replace(/^[\s0]+|\s+$/g, '');
         var dest = !bus.dest ? lineNo : lineNo + ' ' + bus.dest;
         if (!routes[dest]) {
             routes[dest] = [];
