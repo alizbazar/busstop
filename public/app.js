@@ -1,59 +1,90 @@
 
  $('#schedule').tablesorter({sortList: [[1,0]]});
 
-var runner = {
-  trackOffOn: function(callback) {
-    var check, errorMargin, interval, time, timer;
-    time = new Date().getTime();
-    interval = 2000;
-    errorMargin = 700;
-    check = function() {
-      var newtime, timer;
-      clearTimeout(timer);
-      newtime = new Date().getTime();
-      if ((newtime - time) > (interval + errorMargin)) {
-        callback();
-      }
-      time = newtime;
-      timer = setTimeout(check, interval);
+var runner = (function() {
+    var cannon = function(callback) {
+        var check, errorMargin, interval, time, timer;
+        time = new Date().getTime();
+        // These are arbitrary numbers
+        interval = 2000;
+        errorMargin = 700;
+        check = function() {
+            var newtime, timer;
+            clearTimeout(timer);
+            newtime = new Date().getTime();
+            if ((newtime - time) > (interval + errorMargin)) {
+                callback();
+            }
+            time = newtime;
+            timer = setTimeout(check, interval);
+        };
+        timer = setTimeout(check, interval);
+        return {
+            timeSinceLastCheck: function() {
+                return new Date().getTime() - time;
+            },
+            stop: function() {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+            }
+        };
     };
-    timer = setTimeout(check, interval);
-    return {
-      timeSinceLastCheck: function() {
-        return new Date().getTime() - time;
-      },
-      stop: function() {
-        if (timer) {
-          clearTimeout(timer);
+
+    var callbackStack = [];
+
+    // Setup OffOn tracker to run automatically with just underlying callback stack changing
+    cannon(function() {
+        if (callbackStack.length > 0) {
+            debugger;
+            $.each(callbackStack, function(i, cb) {
+                cb();
+            });
         }
-      }
+    });
+
+    var trackOffOn = function(cb) {
+        // Add callback to the callbackStack
+        callbackStack.push(cb);
+        return {
+            stop: function() {
+                // Remove added callback from the stack
+                // TODO: here might be risk of memory leak, verify...
+                var i = callbackStack.indexOf(cb);
+                if (i !== -1) {
+                    callbackStack.splice(i, 1);
+                }
+            }
+        }
     };
-  },
-  runEvery: function(seconds, callback) {
-    var fire, onOffTracker, timer;
-    timer = setTimeout(fire, seconds*1000);
-    fire = function() {
-      clearTimeout(timer);
-      if (callback) {
-        callback();
-      }
-      timer = setTimeout(fire, seconds*1000);
-    };
-    onOffTracker = runner.trackOffOn(fire);
+
     return {
-      stop: function() {
-        clearTimeout(timer);
-        onOffTracker.stop();
-      }
-    };
-  }
-};
+        trackOffOn: trackOffOn,
+        runEvery: function(seconds, callback) {
+            var fire, onOffTracker, timer;
+            fire = function() {
+                clearTimeout(timer);
+                if (callback) {
+                    callback();
+                }
+                timer = setTimeout(fire, seconds * 1000);
+            };
+            timer = setTimeout(fire, seconds * 1000);
+            onOffTracker = trackOffOn(fire);
+            return {
+                stop: function() {
+                    clearTimeout(timer);
+                    onOffTracker.stop();
+                }
+            };
+        }
+    }
+}());
 
 var indicator = (function() {
     var $indicator = $('<div>').attr('id', 'indicator').appendTo('body');
     return {
         update: function() {
-            clearTimeout(null);
             // Immediately reset the color indicator
             $indicator.css('transition', 'none');
             $indicator.addClass('reset');
@@ -66,6 +97,12 @@ var indicator = (function() {
         }
     }
 }());
+
+// On every wakeup, immediately dim the indicator
+runner.trackOffOn(function() {
+    $indicator.css('transition', 'none');
+    $indicator.removeClass('reset');
+});
 
 
  var timetables = (function() {
