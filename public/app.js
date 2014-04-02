@@ -36,7 +36,6 @@ var runner = (function() {
     // Setup OffOn tracker to run automatically with just underlying callback stack changing
     cannon(function() {
         if (callbackStack.length > 0) {
-            debugger;
             $.each(callbackStack, function(i, cb) {
                 cb();
             });
@@ -83,26 +82,29 @@ var runner = (function() {
 
 var indicator = (function() {
     var $indicator = $('<div>').attr('id', 'indicator').appendTo('body');
+
+    // On every wakeup, immediately dim the indicator
+    runner.trackOffOn(function() {
+        $indicator.css('transition', 'none');
+        $indicator.removeClass('refresh');
+        $indicator.addClass('outdated');
+    });
+
     return {
         update: function() {
             // Immediately reset the color indicator
             $indicator.css('transition', 'none');
-            $indicator.addClass('reset');
+            $indicator.addClass('refresh');
+            $indicator.removeClass('outdated');
             // For some reason timeout is needed to get the transition work correctly
             setTimeout(function() {
                 // Fade out indicator in 10s
                 $indicator.css('transition', 'background-color 10s linear');
-                $indicator.removeClass('reset');
+                $indicator.removeClass('refresh outdated');
             }, 20);
         }
     }
 }());
-
-// On every wakeup, immediately dim the indicator
-runner.trackOffOn(function() {
-    $indicator.css('transition', 'none');
-    $indicator.removeClass('reset');
-});
 
 
  var timetables = (function() {
@@ -589,8 +591,7 @@ function switchToView(view) {
     var timeTable = {};
 
     function updateTimer(minutesLeft) {
-        lastTimeLeft = minutesLeft;
-        if (minutesLeft.indexOf('~') == 0) {
+        if (typeof minutesLeft === "string" && minutesLeft.indexOf('~') == 0) {
             minutesLeft = minutesLeft.substring(1);
         }
         minutesLeft = parseInt(minutesLeft, 10);

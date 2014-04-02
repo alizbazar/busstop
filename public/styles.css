@@ -150,8 +150,12 @@ h2.timeLeft.offline {
     border-radius: 5px;
 }
 
-#indicator.reset {
+#indicator.refresh {
     background-color: hsla(138, 55%, 44%, 0.7);
+}
+
+#indicator.outdated {
+    background-color: hsla(0, 55%, 44%, 0.7);
 }
 
 #sourceLink, .fb-like {
