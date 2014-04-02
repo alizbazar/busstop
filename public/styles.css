@@ -178,30 +178,28 @@ h2.timeLeft.offline {
     padding: 0;
     list-style: none;
     vertical-align: baseline;
+    line-height: 0;
 }
 
 .sharing-buttons li {
     margin: 0 10px 0 0;
-    padding: 3px 0 0;
+    padding: 0;
     display: inline-block;
 }
 
 .sharing-buttons li.tweet {
     margin-right: 0px;
     position: relative;
-    top: 1px;
 }
 
 .sharing-buttons li.fb {
     position: relative;
-    top: -1px;
 }
 
 .sharing-buttons div.fb-like {
     margin: 0;
     padding: 0;
     position: relative;
-    top: 2px;
     border: 0;
     height: 20px;
     overflow: hidden;

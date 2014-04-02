@@ -96,7 +96,7 @@
             <h2 class="timeLeft"></h2>
             <p><a href="#" class="btn btn-lg btn-primary" id="backToSchedule">Aikatauluihin</a></p>
         </div>
-        <div class="footer">
+        <div class="footer hidden">
             <div class="sharing-buttons">
                 <ul>
                     <li class="fb"><div class="fb-like" data-href="http://bussi.mobi" data-width="70" data-layout="button" data-action="like" data-show-faces="false" data-share="false" data-font="arial"></div></li>
@@ -110,7 +110,21 @@
         </div>
     </div>
 
-     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        xfbml : true
+      });
+
+      FB.Event.subscribe('xfbml.render', function(response) {
+          setTimeout(function() {
+            $('.footer').removeClass('hidden');
+          }, 200);
+      });
+    };
+    </script>
+
      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
      <script src="taffy-min.js"></script>
      <script src="typeahead.jquery.js"></script>
