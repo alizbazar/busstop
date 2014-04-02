@@ -545,26 +545,29 @@ function timeLeft(timeInSeconds) {
     cb(suggestions);
  }
 
+function switchToView(view) {
+    // Stop timer is switched out of view where tracking is possible
+    if (timer && view != "timerView" && view != "scheduleView") {
+        timer.stop();
+    }
+    $('.view').not('#' + view).toggleClass('hidden', true);
+    $('#' + view).toggleClass('hidden', false);
+    window.scrollTo(0,0);
+}
+
  $('#schedule tbody').on('click', function(e) {
     var destination = $(e.target).closest('tr').data('destination');
     if (destination)
         timerWatch.init(destination);
  });
 
- $('#backToIndex').click(function() {
-    clearTimeout(timer);
-    $('.view').not('#indexView').toggleClass('hidden', true);
-    $('#indexView').toggleClass('hidden', false);
-    if (timer) {
-        timer.stop();
-    }
-    window.scrollTo(0,0);
+ $('#backToIndex').click(function(e) {
+    switchToView('indexView');
     $('#pageUrl').val('');
  });
 
  $('#backToSchedule').click(function(e) {
-    $('.view').not('#scheduleView').toggleClass('hidden', true);
-    $('#scheduleView').toggleClass('hidden', false);
+    switchToView('scheduleView');
     e.preventDefault();
  });
 
@@ -573,11 +576,9 @@ function timeLeft(timeInSeconds) {
     if (url[0] == '#') {
         url = url.substring(1);
     }
+    switchToView('scheduleView');
     renderSchedules(url);
-    $('.view').not('#scheduleView').toggleClass('hidden', true);
-    $('#scheduleView').toggleClass('hidden', false);
     e.preventDefault();
-    window.scrollTo(0,0);
  });
 
  var timerWatch = (function() {
@@ -680,6 +681,5 @@ function timeLeft(timeInSeconds) {
     var url = hash.substring(1);
     renderSchedules(url);
  } else {
-    $('.view').not('#indexView').toggleClass('hidden', true);
-    $('#indexView').toggleClass('hidden', false);
+    switchToView('indexView');
  }
