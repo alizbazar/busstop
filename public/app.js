@@ -9,9 +9,8 @@ var runner = (function() {
         interval = 2000;
         errorMargin = 700;
         check = function() {
-            var newtime, timer;
             clearTimeout(timer);
-            newtime = new Date().getTime();
+            var newtime = new Date().getTime();
             if ((newtime - time) > (interval + errorMargin)) {
                 callback();
             }
@@ -87,7 +86,7 @@ var indicator = (function() {
     runner.trackOffOn(function() {
         $indicator.css('transition', 'none');
         $indicator.removeClass('refresh');
-        $indicator.addClass('outdated');
+        $indicator.toggleClass('outdated', true);
     });
 
     return {
