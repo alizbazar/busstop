@@ -683,10 +683,19 @@ function switchToView(view) {
     }
  }());
 
+ // Store hash changes to local storage for later resume
+ !!window.localStorage && $(window).on('hashchange', function() {
+    var hash = window.location.hash;
+    localStorage.setItem('lastPageOpen', hash);
+ });
 
 /** Start app **/
 
  var hash = window.location.hash;
+ // If no hash set, try to get it from localStorage
+ if ((!hash || hash.length < 2) && window.localStorage) {
+    hash = localStorage.getItem('lastPageOpen');
+ }
  if (hash && hash.length > 1) {
     var url = hash.substring(1);
     renderSchedules(url);
