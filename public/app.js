@@ -469,7 +469,7 @@ function timeLeft(timeInSeconds) {
     e.preventDefault();
  });
 
- var stopmap = {"E2217": "2222222"};
+ var stopmap = {"E2213": "2222218"};
  var lastSuggestionTime;
  var lastApiCall;
  $('#pageUrl').typeahead({
@@ -495,11 +495,10 @@ function timeLeft(timeInSeconds) {
  });
 
  function updateSuggestions(res, cb, q) {
-    var $stoplist = $('#stoplist');
-    $stoplist.html('');
     var suggestions = [];
     $.each(res, function(k, stop) {
-        if (stop.name.toLowerCase().indexOf(q.toLowerCase()) === -1) {
+        // Search term has to be found somewhere in the data
+        if ((stop.name + stop.id + stop['id2'] + stop.addr).toLowerCase().indexOf(q.toLowerCase()) === -1) {
             return;
         }
         var displayName = stop.name + ' (' + stop['id2'] + ')';

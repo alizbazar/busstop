@@ -69,7 +69,7 @@ module.exports = function(grunt) {
           differential: true // Only uploads the files that have changed
         },
         files: [
-          {expand: true, cwd: 'public/', src: ['**', '!manifest.appcache', '!timetables/'], dest: 'busatstop/'},
+          {expand: true, cwd: 'public/', src: ['**', '!manifest.appcache', '!timetables/**'], dest: 'busatstop/'},
           // {expand: true, cwd: 'public/', src: ['manifest.appcache'], dest: '', params: {"CacheControl": "no-cache"} }
         ]
       },
