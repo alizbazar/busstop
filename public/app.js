@@ -84,6 +84,11 @@ var indicator = (function() {
 
     // On every wakeup, immediately dim the indicator
     runner.trackOffOn(function() {
+        var currentView = $('.view').not('.hidden').attr('id');
+        // Only fire if scheduling is used right now
+        if (currentView != 'scheduleView' && currentView != 'timerView') {
+            return;
+        }
         $indicator.css('transition', 'none');
         $indicator.removeClass('refresh');
         $indicator.toggleClass('outdated', true);
