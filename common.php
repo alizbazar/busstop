@@ -12,7 +12,7 @@
  *  source: http://stackoverflow.com/a/9866124/528675
  */
 function cors() {
-
+    global $_SERVER;
     // Allow from any origin
     if (isset($_SERVER['HTTP_ORIGIN'])) {
         // TODO: check header against a few cases
