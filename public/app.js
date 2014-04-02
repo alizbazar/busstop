@@ -457,6 +457,7 @@ function timeLeft(timeInSeconds) {
     }
 
     if (isNaN(pageData.pageUrl)) {
+        // TODO: deprecate
         $.ajax({
             url: "http://tools.alizweb.com/busatstop/getData.php",
             dataType: "jsonp",
@@ -533,9 +534,11 @@ function timeLeft(timeInSeconds) {
         }
 
         lastSuggestionTime = time;
-        lastApiCall = $.get('http://tools.alizweb.com/busatstop/stop-api.php', {"stop": query}, function(res) {
-            updateSuggestions(res, cb, query);
-        });
+        if (navigator.onLine) {
+            lastApiCall = $.get('http://tools.alizweb.com/busatstop/stop-api.php', {"stop": query}, function(res) {
+                updateSuggestions(res, cb, query);
+            });
+        }
     }
  });
 
