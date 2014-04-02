@@ -3,6 +3,12 @@
     text-align: center;
 }
 
+#selectStop label {
+  font-weight: 300;
+  font-size: 17px;
+  margin-bottom: 3px;
+}
+
 /** TYPEAHEAD **/
 .typeahead,
 .tt-query,
