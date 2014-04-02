@@ -329,6 +329,8 @@ var indicator = (function() {
 
  $('#selectStop').on('submit', function(e) {
     var $pageUrl = $('#pageUrl');
+    // Lose focus off the field to allow hiding keyboard on mobile aso.
+    $pageUrl.blur();
     var pageUrl = $pageUrl.val();
     if (!pageUrl) {
         pageUrl = $pageUrl.attr('placeholder');
