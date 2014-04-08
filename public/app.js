@@ -327,13 +327,32 @@ var indicator = (function() {
     $('#selectStop').submit();
  });
 
+ $(document.body).on('mousedown touchend', function(e) {
+    // Require click to come from outside typeahead (which handles clicks itself)
+    if ($(e.target).closest('.twitter-typeahead').length !== 0) {
+        return;
+    }
+    // Hint has to be non-empty
+    var hint = $('input.tt-hint').val();
+    if (!hint) {
+        return;
+    }
+    setTimeout(function() {
+        $('#pageUrl').val(hint);
+    }, 100);
+ });
+
  $('#selectStop').on('submit', function(e) {
+    var hintValue = $('input.tt-hint').val();
     var $pageUrl = $('#pageUrl');
-    // Lose focus off the field to allow hiding keyboard on mobile aso.
-    $pageUrl.blur();
+
     var pageUrl = $pageUrl.val();
     if (!pageUrl) {
         pageUrl = $pageUrl.attr('placeholder');
+    }
+    if (pageUrl.indexOf('(') === -1) {
+        // Try to get it from the first hint, if such exists
+        pageUrl = hintValue;
     }
     if (pageUrl.indexOf('(') !== -1) {
        var shortcode = pageUrl.substring(pageUrl.indexOf('(') + 1, pageUrl.indexOf(')'));
@@ -342,6 +361,9 @@ var indicator = (function() {
         alert('Valitse pysäkin nimi ehdotetuista vaihtoehdoista');
         return;
     }
+
+    // Lose focus off the field to allow hiding keyboard on mobile aso.
+    $pageUrl.blur();
 
     // Because URL is fetched explicitly, clear possible timer
     if (timer) {
