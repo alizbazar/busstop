@@ -558,9 +558,16 @@ function timeLeft(timeInSeconds) {
  },
  {
     source: function(query, cb) {
+        // If query is stop number, it has to have at least 4 letters
+        var isStopNumber = isNaN(query[1]) === false;
+        if (isStopNumber && query.length < 4) {
+            return;
+        }
+
         var time = new Date().getTime();
         // Little throttling to avoid too many requests to the server
-        if (lastApiCall && (lastApiCall.state() == 'pending' || time - lastSuggestionTime < 300)) {
+        // Also, always pass stop number through as partial stop number wouldn't give any results
+        if (lastApiCall && !isStopNumber && (lastApiCall.state() == 'pending' || time - lastSuggestionTime < 300)) {
             lastApiCall.done(function(res) {
                 updateSuggestions(res, cb, query);
             });
@@ -570,6 +577,7 @@ function timeLeft(timeInSeconds) {
         lastSuggestionTime = time;
         if (navigator.onLine) {
             lastApiCall = $.get('http://tools.alizweb.com/busatstop/stop-api.php', {"stop": query}, function(res) {
+                // TODO: add spinner to the field to indicate ongoing lookup
                 updateSuggestions(res, cb, query);
             });
         }
