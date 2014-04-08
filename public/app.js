@@ -323,7 +323,7 @@ var indicator = (function() {
     return controls;
  }());
 
- $('#pageUrl').on('typeahead:selected', function(e, suggestion) {
+ $('#pageUrl').on('typeahead:selected typeahead:autocompleted', function(e, suggestion) {
     submit(suggestion);
  });
 
