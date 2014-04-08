@@ -109,16 +109,8 @@ h2.timeLeft.offline {
 }
 #schedule tbody tr {
     cursor: pointer;
-}/*
-#schedule tbody tr:hover {
-    background-color: #c7dced;
 }
-#schedule tbody td:hover {
-    background-color: #c7dced;
-}*/
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-    background-color: #e0f4ff;
-}
+
 #scheduleView .info-sub-text {
     margin-bottom: 4px;
     font-size: 15px;

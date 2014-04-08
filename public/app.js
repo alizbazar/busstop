@@ -323,8 +323,8 @@ var indicator = (function() {
     return controls;
  }());
 
- $('#pageUrl').on('typeahead:selected', function() {
-    $('#selectStop').submit();
+ $('#pageUrl').on('typeahead:selected', function(e, suggestion) {
+    submit(suggestion);
  });
 
  $(document.body).on('mousedown touchend', function(e) {
@@ -343,6 +343,8 @@ var indicator = (function() {
  });
 
  $('#selectStop').on('submit', function(e) {
+    e.preventDefault();
+
     var hintValue = $('input.tt-hint').val();
     var $pageUrl = $('#pageUrl');
 
@@ -362,6 +364,18 @@ var indicator = (function() {
         return;
     }
 
+    // Submit passing id and name as parameters
+    submit({"value": pageUrl, "id": stopid});
+ });
+
+ function submit(item) {
+    if (!item || !item.id) {
+        console.log('Called submit() without correct stop item');
+        return;
+    }
+
+    var $pageUrl = $('#pageUrl');
+
     // Lose focus off the field to allow hiding keyboard on mobile aso.
     $pageUrl.blur();
 
@@ -374,12 +388,10 @@ var indicator = (function() {
     $('#scheduleView').toggleClass('hidden', false);
     window.scrollTo(0,0);
     $pageUrl.val('');
-    renderSchedules(stopid);
+    renderSchedules(item.id);
 
-    ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', pageUrl);
-
-    e.preventDefault();
- });
+    ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', item.value);
+ }
 
  function parseUrl(url) {
 
@@ -572,7 +584,7 @@ function timeLeft(timeInSeconds) {
             return;
         }
         var displayName = stop.name + ' (' + stop['id2'] + ')';
-        suggestions.push({"value": displayName});
+        suggestions.push({"value": displayName, "id": stop.id});
         stopmap[stop['id2']] = stop.id;
     });
     cb(suggestions);
