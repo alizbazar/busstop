@@ -218,7 +218,7 @@ var mapSelector = (function() {
         };
         var url = encodeURIComponent(reittiopasEndpoint + '?' + $.param(params));
 
-        return $.getJSON('http://tools.alizweb.com/busatstop/hsl-proxy.php?url=' + url, {crossDomain: true}, function(data) {
+        return $.getJSON('https://tools.alizweb.com/busatstop/hsl-proxy.php?url=' + url, {crossDomain: true}, function(data) {
             console.log(data);
             if (data && data.length > 0) {
 

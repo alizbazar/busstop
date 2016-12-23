@@ -267,7 +267,7 @@ var indicator = (function() {
          },
          fetchRealtimeSchedules: function(stopId, callback) {
              ajaxRequest({
-                 url: "http://tools.alizweb.com/busatstop/departure-api.php",
+                 url: "https://tools.alizweb.com/busatstop/departure-api.php",
                  //dataType: "jsonp", // now we support cors!
                  data: {"stop": stopId},
                  success: function(data) {
@@ -580,7 +580,7 @@ function timeLeft(timeInSeconds) {
     if (isNaN(pageData.pageUrl)) {
         // TODO: deprecate
         ajaxRequest({
-            url: "http://tools.alizweb.com/busatstop/getData.php",
+            url: "https://tools.alizweb.com/busatstop/getData.php",
             // dataType: "jsonp",
             data: pageData,
             success: function(response) {
@@ -662,7 +662,7 @@ function timeLeft(timeInSeconds) {
 
         lastSuggestionTime = time;
         lastApiCall = ajaxRequest({
-            url: "http://tools.alizweb.com/busatstop/stop-api.php",
+            url: "https://tools.alizweb.com/busatstop/stop-api.php",
             data: {"stop": query},
             success: function(res) {
                 // TODO: add spinner to the field to indicate ongoing lookup
