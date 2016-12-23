@@ -1,6 +1,90 @@
 
  $('#schedule').tablesorter({sortList: [[1,0]]});
 
+
+Offline.options = {
+  // Should we check the connection status immediatly on page load.
+  checkOnLoad: false,
+
+  // Should we monitor AJAX requests to help decide if we have a connection.
+  interceptRequests: false,
+
+  checks: {
+    image: {
+        url: '//bussi.mobi/empty.gif'
+    },
+    active: 'image'
+  },
+
+  // Should we automatically retest periodically when the connection is down (set to false to disable).
+  reconnect: {
+    // How many seconds should we wait before rechecking.
+    initialDelay: 3,
+
+    // How long should we wait between retries.
+    //delay: (1.5 * last delay, capped at 1 hour)
+  },
+
+  // Should we store and attempt to remake requests which fail while the connection is down.
+  requests: false
+};
+
+var runOffline = typeof navigator.onLine === "boolean" && !navigator.onLine;
+var previousReq = null;
+// Make sure calls are made only if seemingly online
+var ajaxRequest = function() {
+
+    // If some request was deferred previously, reject that (to avoid multiple requests & callbacks)
+    if (previousReq && previousReq.state === "deferred" && !!previousReq.deferred) {
+        previousReq.deferred.reject();
+    }
+
+    if (typeof navigator.onLine === "boolean" && !navigator.onLine || Offline.state !== "up") {
+        // We're offline
+
+        // Store this to run once we're back online
+        previousReq = {"that": this, "args": arguments, "state": "deferred", "deferred": new $.Deferred()};
+        // Mark connection OFFLINE but only if the app was started ONLINE
+        if (!runOffline) {
+            Offline.markDown();
+        }
+        return previousReq.deferred;
+    } else {
+        // We seem to be online -> pipe the ajax
+        previousReq = {"that": this, "args": arguments, "state": "executed", "deferred": $.ajax.apply(this, arguments)};
+
+        return previousReq.deferred;
+    }
+};
+// Once coming online, execute last deferred call, if such exists
+Offline.on('confirmed-up', function() {
+    if (previousReq && previousReq.state === "deferred" && !!previousReq.deferred) {
+        previousReq.state === "executed";
+        $.ajax.apply(previousReq.that, previousReq.args).done(function() {
+            previousReq.deferred.resolveWith(this, arguments);
+        }).fail(function() {
+            previousReq.deferred.rejectWith(this, arguments);
+        });
+    }
+
+    // Enable online-features when inet goes up
+    $('#pageUrl, #follow, #openMapChooser').removeAttr('disabled');
+
+    // The app appears to be online -> enable running online!
+    if (runOffline) {
+        runOffline = false;
+    }
+});
+
+Offline.on('confirmed-down', function() {
+    // if net is down, disable certain features
+    $('#pageUrl, #follow, #openMapChooser').attr('disabled', 'disabled');
+});
+if (runOffline) {
+    // disable certain buttons which would require to be online - like search of new stops and map
+    $('#pageUrl, #follow, #openMapChooser').attr('disabled', 'disabled');
+}
+
 var runner = (function() {
     var cannon = function(callback) {
         var check, errorMargin, interval, time, timer;
@@ -173,7 +257,7 @@ var indicator = (function() {
          },
          get: function(stopId, callback) {
 
-             if (callback && navigator.onLine) {
+             if (callback) {
                  this.fetchRealtimeSchedules(stopId, callback);
              }
              if (schedules[stopId]) {
@@ -182,17 +266,16 @@ var indicator = (function() {
              return null;
          },
          fetchRealtimeSchedules: function(stopId, callback) {
-             $.ajax({
+             ajaxRequest({
                  url: "http://tools.alizweb.com/busatstop/departure-api.php",
-                 dataType: "jsonp",
+                 //dataType: "jsonp", // now we support cors!
                  data: {"stop": stopId},
                  success: function(data) {
                      callback(data);
-                 },
-                 error: function() {
-                     console.log('Error fetching real time timetables');
-                     console.log(arguments);
                  }
+             }).fail(function() {
+                 console.log('Error fetching real time timetables');
+                 console.log(arguments);
              });
          },
          retrieveFromStorage: function(stopId) {
@@ -211,7 +294,7 @@ var indicator = (function() {
          },
          download: function(id, callback) {
 
-             $.ajax({
+             ajaxRequest({
                  url: "timetables/" + id + ".dat",
                  data: "text",
                  cache: false,
@@ -219,11 +302,12 @@ var indicator = (function() {
                  success: function(data) {
                      this.add(id, data);
                      callback(data);
-                 },
-                 error: function() {
-                     console.log('Error while retrieving timetables');
-                     console.log(arguments);
                  }
+             }).fail(function() {
+                 alert('Suosikkipysäkin aikataulujen lataaminen ei onnistunut.' + "\n"
+                        + "Poista juuri lisäämäsi pysäkki suosikeista ja lisää se uudestaan!")
+                 console.log('Error while retrieving timetables');
+                 console.log(arguments);
              });
          }
      };
@@ -269,7 +353,7 @@ var indicator = (function() {
             $('<a>').attr('href', '#' + stop.id).addClass('quickLink btn btn-success').html(stop.name).appendTo(stopDomItem);
             $('#starList').append(stopDomItem);
             $('.firstUseView').toggleClass('hidden', true);
-            $('#withFavoritestView').toggleClass('hidden', false);
+            $('#withFavoritesView').toggleClass('hidden', false);
 
             if (onlyDOM) {
                 return true;
@@ -293,7 +377,7 @@ var indicator = (function() {
                 }
             });
             if (this.isEmpty()) {
-                $('#withFavoritestView').toggleClass('hidden', true);
+                $('#withFavoritesView').toggleClass('hidden', true);
                 $('.firstUseView').toggleClass('hidden', false);
             }
             return save();
@@ -390,7 +474,9 @@ var indicator = (function() {
     $pageUrl.val('');
     renderSchedules(item.id);
 
-    ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', item.value);
+    if (!!ga && navigator.onLine) {
+        ga('send', 'event', 'mainInteractions', 'click', 'pageUrl', item.value);
+    }
  }
 
  function parseUrl(url) {
@@ -457,6 +543,7 @@ function timeLeft(timeInSeconds) {
         var line = {};
         $.extend(line, busses[0]);
         var time = line.rtime ? line.rtime : line.time;
+        // This is in minutes
         line.timeEstimate = timeLeft(time);
         var nextLine = busses[1];
         if (nextLine) {
@@ -492,20 +579,19 @@ function timeLeft(timeInSeconds) {
 
     if (isNaN(pageData.pageUrl)) {
         // TODO: deprecate
-        $.ajax({
+        ajaxRequest({
             url: "http://tools.alizweb.com/busatstop/getData.php",
-            dataType: "jsonp",
+            // dataType: "jsonp",
             data: pageData,
             success: function(response) {
                 var data = response.data;
                 currentStop = {"name": data.stopname, "url": pageUrl};
                 renderScheduleView(data);
                 indicator.update();
-            },
-            error: function() {
-                $('#scheduleView').toggleClass('hidden', true);
-                $('#indexView').toggleClass('hidden', false);
             }
+        }).fail(function() {
+            $('#scheduleView').toggleClass('hidden', true);
+            $('#indexView').toggleClass('hidden', false);
         });
     } else {
         var stopId = pageData.pageUrl;
@@ -528,7 +614,7 @@ function timeLeft(timeInSeconds) {
  }
 
  $('#starStop').click(function(e) {
-    $star = $(this);
+    var $star = $(this);
     // get current stop
     if (!currentStop) {
         return false;
@@ -575,12 +661,14 @@ function timeLeft(timeInSeconds) {
         }
 
         lastSuggestionTime = time;
-        if (navigator.onLine) {
-            lastApiCall = $.get('http://tools.alizweb.com/busatstop/stop-api.php', {"stop": query}, function(res) {
+        lastApiCall = ajaxRequest({
+            url: "http://tools.alizweb.com/busatstop/stop-api.php",
+            data: {"stop": query},
+            success: function(res) {
                 // TODO: add spinner to the field to indicate ongoing lookup
                 updateSuggestions(res, cb, query);
-            });
-        }
+            }
+        })
     }
  });
 
@@ -614,13 +702,24 @@ function switchToView(view) {
         timerWatch.init(destination);
  });
 
- $('#backToIndex').click(function(e) {
+ $('.backToIndex').click(function(e) {
     switchToView('indexView');
     $('#pageUrl').val('');
  });
 
  $('#backToSchedule').click(function(e) {
     switchToView('scheduleView');
+    e.preventDefault();
+ });
+
+ $('#openMapChooser').click(function(e) {
+    switchToView('mapView');
+
+    mapSelector.init(function(stopId) {
+        switchToView('scheduleView');
+        renderSchedules(stopId);
+    });
+
     e.preventDefault();
  });
 
@@ -637,7 +736,7 @@ function switchToView(view) {
  var timerWatch = (function() {
     var data, destination;
     var $view = $('#timerView');
-    var lastTime;
+    var lastTime = {};
 
     var timeTable = {};
 
@@ -689,6 +788,8 @@ function switchToView(view) {
 
     return {
         'init': function(dest, latestData) {
+            // Reset lastTime temp variable just to make sure no old data exist
+            lastTime = {};
             if (latestData) {
                 data = latestData;
             }
@@ -707,16 +808,35 @@ function switchToView(view) {
             if (!destination || $view.hasClass('hidden')) {
                 return;
             }
+            var trimDest = function(dest) {
+                var space = dest.indexOf(' ');
+                if (space === -1) {
+                    return dest;
+                } else {
+                    return dest.substring(0, space);
+                }
+            };
             $.each(data.lines, function(i, line) {
-                if (line.destination == destination) {
+                if (trimDest(line.destination) == trimDest(destination)) {
                     if (line.rtime) {
                         updateCountdownUntil(line.rtime, true);
-                    } else if (line.time && line.time != lastTime) {
-                        updateCountdownUntil(line.time);
-                        lastTime = line.time;
-                    } else if (line.timeEstimate != lastTime) {
-                        updateTimer(line.timeEstimate);
-                        lastTime = line.timeEstimate;
+                    } else if ( (line.time && line.time != lastTime[destination]) || line.timeEstimate != lastTime[destination]) {
+                        var time = line.time || line.timeEstimate;
+                        // Sometimes realtime data is not returned on every check
+                        // Thus if shorter time is present due to previously successcully received rtime data,
+                        // respect that and assume there's less time left than what the schedule says
+                        if (lastTime[destination]) {
+
+                            // Don't update if previous prediction was sooner
+                            // (this is because rtime may sometimes appear only on some of the requests,
+                            //  thus if rtime prediction was that the bus was early, avoid replacing it with timetable data)
+                            var lastTimeLeft = (Math.round(new Date().getTime() / 1000) - lastTime[destination]);
+                            if ( lastTimeLeft > 0 && lastTime[destination] < time) {
+                                time = lastTime[destination];
+                            }
+                        }
+                        updateCountdownUntil(time);
+                        lastTime[destination] = time;
                     }
                     return false;
                 }

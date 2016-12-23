@@ -49,6 +49,7 @@
     <meta name="msapplication-TileColor" content="#007ac9">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="offline-theme-slide.css">
 </head>
 <body>
     <div class="container">
@@ -56,14 +57,17 @@
             <div class="firstUseView">
                 <h1>Seuraa bussin saapumista pysäkille</h1>
             </div>
-            <div id="withFavoritestView" class="hidden">
+            <div id="withFavoritesView" class="hidden">
                 <h2>Suosikkipysäkit</h2>
                 <ul id="starList"></ul>
                 <h2>Seuraa uutta pysäkkiä</h2>
             </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary" id="openMapChooser">Valitse kartalta</button>
+            </div>
             <form id="selectStop">
                 <div class="form-group">
-                    <label for="pageUrl">Kirjoita pysäkin nimi tai koodi:</label>
+                    <label for="pageUrl">tai kirjoita pysäkin nimi tai koodi:</label>
                     <input type="text" id="pageUrl" class="form-control typeahead" value="" placeholder="Konemies (E2213)" autocapitalize="off" autocorrect="off" autocomplete="off" />
                 </div>
                 <p><button type="submit" class="btn btn-lg btn-primary" id="follow">Seuraa</button></p>
@@ -73,6 +77,10 @@
                 <p><a href="#1171153" class="btn btn-success quickLink" id="follow">Palkkatilanportti</a></p>
                 <p><a href="#2222218" class="btn btn-success quickLink" id="follow">Konemies</a></p>
             </div>
+        </div>
+        <div class="jumbotron view hidden" id="mapView">
+            <div id="map"></div>
+            <p><a href="#" class="btn btn-primary backToIndex">Takaisin etusivulle</a></p>
         </div>
         <div class="jumbotron view" id="scheduleView">
             <h2><span id="stopName"></span><a href="#" id="starStop"></a></h2>
@@ -87,7 +95,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <p><a href="#" class="btn btn-lg btn-primary" id="backToIndex">Etusivulle</a></p>
+            <p><a href="#" class="btn btn-lg btn-primary backToIndex">Etusivulle</a></p>
         </div>
         <div class="jumbotron view hidden" id="timerView">
             <h2 class="busNo"></h2>
@@ -125,11 +133,16 @@
     };
     </script>
 
-     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
-     <script src="taffy-min.js"></script>
-     <script src="typeahead.jquery.js"></script>
-     <script src="app.js"></script>
-     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-countdown/1.6.3/jquery.countdown.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.13.3/jquery.tablesorter.min.js"></script>
+    <script src="taffy-min.js"></script>
+    <script src="typeahead.jquery.js"></script>
+    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyA0Pu_Hah-MpXTeFovu0Qbsbj8bICaKFos&v=3.exp&sensor=false"></script>
+    <script src="markerwithlabel.js"></script>
+    <script src="geolocationmarker.js"></script>
+    <script src="mapselector.js"></script>
+    <script src="offline.js"></script>
+    <script src="app.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-countdown/1.6.3/jquery.countdown.min.js"></script>
 
     <!-- Social Script loading -->
     <div id="fb-root"></div>
@@ -151,7 +164,7 @@
           ga('send', 'pageview');
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      
+
     </script>
 </body>
 </html>

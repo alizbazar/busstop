@@ -1,0 +1,20 @@
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <defs>
+    <font horiz-adv-x="2048">
+        <font-face 
+font-family="HSLpiktoKEHYS"
+units-per-em="2048"
+/>
+      <glyph unicode="."
+d="M205 207v1229q0 83 60 142.5t143 59.5h1228q86 0 146.5 -59.5t60.5 -142.5v-1229q0 -86 -60.5 -146.5t-146.5 -60.5h-1228q-84 0 -143.5 60.5t-59.5 146.5zM469 395q0 -22 13 -37t30 -20l61 -10v-129q0 -10 8.5 -17.5t20.5 -7.5h98q9 0 17 7.5t8 17.5v114
+q112 -14 297 -14q192 0 301 14v-114q0 -10 8.5 -17.5t18.5 -7.5h98q12 0 20.5 7.5t8.5 17.5v129l61 10q43 11 43 57v959q0 32 -20.5 53t-57.5 25q-246 30 -477 30q-268 0 -479 -30q-37 -4 -57.5 -25t-20.5 -53v-959zM559 694v598q0 45 45 45l846 -4q43 0 43 -45v-594v-4
+q0 -21 -9.5 -31.5t-33.5 -13.5q-240 -41 -420 -41q-228 0 -426 45q-25 5 -35 15t-10 30zM592 481q2 21 18 36t37 15q22 0 37.5 -15.5t15.5 -35.5q0 -23 -15.5 -39t-37.5 -16q-23 2 -39 17.5t-16 37.5zM1341 481q2 20 18 35.5t36 15.5q22 0 37.5 -15.5t15.5 -35.5
+q0 -23 -15.5 -39t-37.5 -16q-22 2 -38 18t-16 37z" />
+    </font>
+    </defs>
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+    <g>
+        <rect fill="#fff" stroke-width="0" x="2" y="2" width="20" height="20" stroke="#fff"/>
+        <text font-family="HSLpiktoKEHYS" font-size="28px" x="-2" y="23" style="fill:#007AC9;">.</text>
+    </g>
+</svg>
